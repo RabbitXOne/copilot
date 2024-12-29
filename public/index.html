@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "oe0928pd28");
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strona główna - pomoce naukowe</title>
+
+    <link rel="stylesheet" href="./css/output.css" type="text/css">
+    <script src="/jquery/jquery.js"></script>
+
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Co-pilot" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <style>
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .loadingbar {
+            height: 4px;
+            margin-bottom: -4px;
+            overflow: hidden;
+            position: relative; /* Added */
+        }
+        
+        .loadingbar div:before {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #ef7000;
+            animation: box-1 2100ms cubic-bezier(0.65, 0.81, 0.73, 0.4) infinite;
+        }
+        
+        .loadingbar div:after {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #ef7000;
+            animation: box-2 2100ms cubic-bezier(0.16, 0.84, 0.44, 1) infinite;
+            animation-delay: 1150ms;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .loadingbar div:before {
+                background: #6d28d9;
+            }
+            .loadingbar div:after {
+                background: #6d28d9;
+            }
+        }
+        
+        @keyframes box-1 {
+            0% {
+                left: -35%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 100%;
+                right: -90%;
+            }
+        }
+        
+        @keyframes box-2 {
+            0% {
+                left: -200%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 107%;
+                right: -8%;
+            }
+        }
+        
+        .loadingSpinner {
+            animation: rotate 2s linear infinite;
+        }
+        
+        .loadingSpinner .spinnerPath {
+          stroke-linecap: round;
+          animation: dash 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes rotate {
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        
+        @keyframes dash {
+          0% {
+            stroke-dasharray: 1, 150;
+            stroke-dashoffset: 0;
+          }
+          50% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -35;
+          }
+          100% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -124;
+          }
+        }
+
+        @keyframes closeModal {
+            from {
+                opacity: 1;
+                scale: 1;
+            }
+            to {
+                opacity: 0;
+                scale: 0.9;
+            }
+            
+        }
+
+        @keyframes openModal {
+            from {
+                opacity: 0;
+                scale: 0.9;
+            }
+            to {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+
+        .fadeIn {
+    animation: fadeIn 0.15s ease-in-out;
+}
+
+.fadeOut {
+    animation: fadeOut 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+        
+        .redbadge {
+            background: #fc7171;
+            color: #d30000;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .redbadge {
+                background: #450000;
+                color: #d30000;
+            }
+        }
+
+        #costsBars div:nth-child(1) {
+  z-index: 36;
+}
+
+#costsBars div:nth-child(2) {
+  z-index: 35;
+}
+
+#costsBars div:nth-child(3) {
+  z-index: 34;
+}
+
+#costsBars div:nth-child(4) {
+  z-index: 33;
+}
+
+#costsBars div:nth-child(5) {
+  z-index: 32;
+}
+
+#costsBars div:nth-child(6) {
+  z-index: 31;
+}
+
+#costsBars div:hover {
+  z-index: 39;
+}
+
+.alinkunderline {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .alinkunderline::after {
+            content: '';
+            background: #9ca3af;
+            height: 1px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .alinkunderline::after {
+                background: #9ca3af;
+            }
+        }
+
+        .alinkunderline:hover::after {
+            transform: scaleX(1);
+        }
+
+        .alinkunderline:not(:hover)::after {
+            transform: scaleX(0);
+            transform-origin: right;
+        }
+        
+        </style>
+
+</head>
+<body class="dark:bg-gray-900">
+    
+    <script src="/socketio/socket.io.js"></script>
+    
+    <script>
+        const socket = io();
+    </script>
+
+    <div class="flex flex-col h-svh min-h-fit">
+
+    <div id="infoBanner" class="hidden w-full font-medium p-3 select-none">
+        <i class="mr-2 justify-center content-start mt-0.5"></i>
+        <p class="text-sm text-start justify-center mr-2">Ogłoszenie</p>
+        <div class="flex-grow"></div>
+        <button id="closeInfoBanner" class="rounded bg-opacity-5 px-2 text-sm transition duration-200">Zamknij</button>
+    </div>
+
+    <script>
+        $('#closeInfoBanner').on('click', function() {
+            $('#infoBanner').addClass('hidden');
+        });
+    </script>
+
+    <div class="flex flex-row items-center justify-center mt-12 flex-wrap mx-3 dark:text-gray-200">
+        <i class="fa-solid fa-school-circle-check content-start text-4xl mr-5 mb-1"></i>
+        <p class="text-4xl font-bold mb-1">Pomoce naukowe</p>
+    </div>
+
+    <div id="elements" class="flex mt-6 justify-center flex-col sm:flex-row flex-wrap">
+        <div role="status" class="flex flex-row sm:flex-col sm:w-64 sm:aspect-square bg-gray-50 dark:bg-gray-850 rounded-md m-4 mb-2 sm:p-4 p-4 transition duration-200 shadow-md border border-gray-200 dark:border-gray-700 sm:items-center sm:justify-center animate-pulse">
+            <div class="size-16 sm:size-24 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse mb-4 self-center mr-4 sm:mr-0"></div>
+            <div class="h-4 w-32 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse self-center"></div>
+        </div>
+        <div role="status" class="flex flex-row sm:flex-col sm:w-64 sm:aspect-square bg-gray-50 dark:bg-gray-850 rounded-md m-4 mb-2 sm:p-4 p-4 transition duration-200 shadow-md border border-gray-200 dark:border-gray-700 sm:items-center sm:justify-center animate-pulse">
+            <div class="size-16 sm:size-24 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse mb-4 self-center mr-4 sm:mr-0"></div>
+            <div class="h-4 w-32 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse self-center"></div>
+        </div>
+        <div role="status" class="flex flex-row sm:flex-col sm:w-64 sm:aspect-square bg-gray-50 dark:bg-gray-850 rounded-md m-4 mb-2 sm:p-4 p-4 transition duration-200 shadow-md border border-gray-200 dark:border-gray-700 sm:items-center sm:justify-center animate-pulse">
+            <div class="size-16 sm:size-24 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse mb-4 self-center mr-4 sm:mr-0"></div>
+            <div class="h-4 w-32 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse self-center"></div>
+        </div>
+    </div>
+
+    <div style="flex: 1; flex-grow: 3;"></div>
+
+    <div class="flex m-4 bg-white mt-auto dark:bg-gray-900">
+
+            <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-300 dark:bg-gray-700 rounded-full">
+                <span id="inicjaly" class="inicjaly font-medium text-gray-600 dark:text-gray-300"></span>
+            </div>
+
+            <div class="flex flex-col ms-3 flex-grow">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-500 whitespace-nowrap overflow-hidden overflow-ellipsis">Zalogowano jako:</p>
+                <p id="imienazwisko" class="imienazwisko text-sm font-medium text-gray-900 dark:text-gray-400 whitespace-nowrap overflow-hidden overflow-ellipsis">Nieznany użytkownik</p>
+            </div>
+
+            <button class="ml-2 rounded-md bg-white dark:bg-gray-900 hover:bg-gray-200 hover:dark:bg-gray-850 p-2 text-gray-700 dark:text-gray-400 transition duration-200" onclick="toggleModal()"><i class="fa-solid fa-circle-user"></i> Profil</button>
+            <div id="tooltip-logout" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white dark:text-gray-300 transition-opacity delay-500 duration-300 bg-gray-900 rounded-md shadow-sm opacity-0 tooltip dark:bg-gray-700">Wyloguj się<div class="tooltip-arrow" data-popper-arrow></div></div>
+            <a href="/logout"><button data-tooltip-target="tooltip-logout" class="ml-2 rounded-md bg-white dark:bg-gray-900 hover:bg-gray-200 hover:dark:bg-gray-850 p-2 text-gray-700 dark:text-gray-400 transition duration-200"><i class="fa-solid fa-right-from-bracket"></i></button></a>
+    </div>
+
+    </div>
+
+    <div id="bannedScreen" class="absolute top-0 left-0 z-40 flex h-svh w-svw bg-gray-50 dark:bg-gray-900">
+        <div class="self-center text-gray-300 mx-auto flex flex-col p-6 max-w-lg">
+            <i class="fa-solid fa-circle-minus text-5xl text-red-600 dark:text-red-700 text-center"></i>
+            <p class="font-semibold text-2xl text-gray-200 dark:text-gray-200 text-center mt-3">To konto nie ma dostępu do tej funkcji</p>
+
+            <p class="text-center mt-6 dark:text-gray-400">Serwer odmówił dostępu do żądanej usługi (╯°□°)╯︵ ┻━┻<br>Spróbuj ponownie później, a jeśli problem nadal występuje, skontaktuj się z administratorem strony.</p>
+            
+            <button class="mt-6 bg-gray-300 dark:bg-gray-800 text-gray-700 dark:text-gray-400 rounded-md p-2 hover:bg-gray-400 dark:hover:bg-gray-750 transition duration-200 font-medium max-w-64 self-center px-8 cursor-pointer" onclick="window.location.href = '/logout'">Wyloguj się</button>
+        </div>
+    </div>
+
+    <div id="modalContainer" class="hidden fixed top-0 left-0 w-svw h-svh bg-gray-900 bg-opacity-50 z-30 items-center justify-center" style="backdrop-filter: blur(4px);">
+
+        <div id="modalBox" class="hidden bg-white dark:bg-gray-850 sm:dark:border-gray-700 dark:sm:border sm:rounded-lg sm:shadow-md w-full h-full sm:h-fit sm:w-4/5 max-w-2xl overflow-hidden">
+            
+            <div id="sendingReport" class="loadingbar hidden"><div></div></div>
+
+            <div class="p-5">
+                <!-- <div class="flex flex-row justify-between">
+                    <h2 class="text-2xl font-bold select-none dark:text-gray-300"></h2>
+                </div> -->
+                <div class="flex flex-row">
+                    
+                    
+                    <div class="relative inline-flex items-center justify-center w-20 h-20 overflow-hidden bg-gray-300 dark:bg-gray-700 rounded-full cursor-default">
+                        <span id="inicjaly" class="inicjaly font-medium text-3xl text-gray-600 dark:text-gray-300"></span>
+                    </div>
+                    
+                    <div class="flex flex-col flex-grow ml-5 mt-3">
+                        <div class="flex flex-row">
+                            <p id="imienazwisko" class="text-2xl imienazwisko font-medium text-gray-900 dark:text-gray-400">Nieznany użytkownik</p>
+                            <span id="badge">
+                                
+
+                            </span>
+                        </div>
+                        <p class="text-sm mt-1 font-normal text-gray-500 dark:text-gray-500">Użytkownik od: <span id="uzytkownikOd"></span></p>
+                    </div>
+                    
+                    
+                    <button id="closeModal" class="rounded-md dark:text-gray-300 hover:bg-gray-200 hover:dark:bg-gray-800 aspect-square max-h-9 max-w-9 p-2 transition duration-200" onclick="toggleModal()"><i class="fa-solid fa-x mx-1"></i></button>
+                    
+                </div>
+                <div class="mt-6 flex flex-col">
+                    
+                    <!-- <hr class="flex-grow border-gray-200 dark:border-gray-700 mb-3 w-full"> -->
+
+                    <div class="mt-3 flex flex-row">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-gray-400">Zmiana hasła</h3>
+                        <a href="/hasloreset"><button class="ml-3 p-1 px-2 rounded text-base font-bold bg-gray-900 text-white dark:bg-gray-400 dark:text-gray-900">Przejdź<i class="fa-solid fa-arrow-right ms-1"></i></button></a>
+                    </div>
+
+                    <div id="costsContainer" class="mt-3 p-3 rounded-md border border-gray-300 dark:border-gray-700 bg-gray-300 dark:bg-gray-800 flex flex-col">
+                        <div id="costsList" class="flex flex-row">
+                            <!-- <div class="flex flex-row cursor-pointer hover:font-medium mr-5">
+                                <div class="rounded-full bg-red-600 h-2 w-2 mt-1.5"></div>
+                                <p class="text-sm text-gray-700 dark:text-gray-400 ml-2">Czat z AI</p>
+                            </div>
+                            <div class="flex flex-row cursor-pointer hover:font-medium mr-5">
+                                <div class="rounded-full bg-yellow-400 h-2 w-2 mt-1.5"></div>
+                                <p class="text-sm text-gray-700 dark:text-gray-400 ml-2">Generator testów</p>
+                            </div> -->
+                        </div>
+                        <div class="flex flex-col mt-3">
+                            <div id="costsBars" class="w-full rounded-full bg-gray-300 dark:bg-gray-700 h-3 flex flex-row overflow-hidden">
+                                <!-- <div class="rounded-full bg-red-600 h-3 w-[12%] hover:ring-2 hover:ring-gray-100 hover:z-10" style="z-index: 2;"></div> -->
+                                <!-- <div class="costElementBar rounded-full bg-yellow-400 h-3 w-[32%] hover:ring-2 hover:ring-gray-100 -ml-2"></div> -->
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-500 mt-1 text-end">limit: <span class="costsLimit"></span> zł (użyte: <span id="costsUsed"></span> zł)</p>
+                        </div>
+                        <div class="flex flex-col mt-3">
+                            <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">Twój limit środków do wykorzystania (<span class="costsLimit"></span> zł) resetuje się <span id="costsResetDate"></span>. Jeśli przekroczysz limit, nie będziesz mógł korzystać z funkcji AI.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex mt-4 text-sm text-gray-500 justify-center gap-4">
+                        <a href="/polityka_prywatnosci" class="alinkunderline dark:hover:text-gray-400 transition duration-150"><p>Polityka prywatności</p></a>
+                        <a id="discord_invite" href="#" class="alinkunderline hidden dark:hover:text-gray-400 transition duration-150"><p>Discord Support</p></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="tailwindColors" class="hidden">
+        <div class="gray-300 dark:gray-700"></div>
+        <div class="green-500 dark:bg-green-500"></div>
+        <div class="blue-500 dark:bg-blue-500"></div>
+        <div class="yellow-500 dark:bg-yellow-500"></div>
+        <div class="red-500 dark:bg-red-500"></div>
+        <div class="purple-500 dark:bg-purple-500"></div>
+        <div class="pink-500 dark:bg-pink-500"></div>
+        <div class="indigo-500 dark:bg-indigo-500"></div>
+    </div>
+    
+    <script>
+
+        // Adding hover effect
+        $('#costsList > div').hover(
+        function() {
+            // On hover
+            let index = $(this).index();
+            $('#costsBars > div').eq(index).addClass('ring-2 ring-gray-100');
+            $('#costsBars > div').eq(index).css('z-index', '10');
+        }, 
+        function() {
+            // On hover out
+            let index = $(this).index();
+            $('#costsBars > div').eq(index).removeClass('ring-2 ring-gray-100');
+            $('#costsBars > div').eq(index).css('z-index', '');
+        }
+        );
+
+        // Adding hover effect
+        $('#costsBars > div').hover(
+        function() {
+            // On hover
+            let index = $(this).index();
+            $('#costsList > div').eq(index).addClass('font-semibold');
+        }, 
+        function() {
+            // On hover out
+            let index = $(this).index();
+            $('#costsList > div').eq(index).removeClass('font-semibold');
+        }
+        );
+
+        function toggleModal() {
+            if($('#modalContainer').hasClass('hidden')) {
+                $('#modalContainer').removeClass('hidden');
+                $('#modalContainer').addClass('flex');
+                $('#modalContainer').css('animation', 'fadeIn 0.2s ease-out');
+
+                $('#modalBox').removeClass('hidden');
+                $('#modalBox').css('animation', 'openModal 0.2s ease-out');
+
+                setTimeout(function() {
+                    $('#modalContainer').css('animation', '');
+                    $('#modalBox').css('animation', '');
+                }, 190);
+            } else {
+                $('#modalContainer').css('animation', 'fadeOut 0.2s ease-in-out');
+                $('#modalBox').css('animation', 'closeModal 0.2s ease-in-out');
+            
+                setTimeout(function() {
+                    $('#modalContainer').addClass('hidden');
+                    $('#modalContainer').removeClass('flex');
+                    $('#modalBox').addClass('hidden');
+                    $('#modalContainer').css('animation', '');
+                    $('#modalBox').css('animation', '');
+                }, 190);
+            }
+        }
+
+        $('#bannedScreen').addClass('hidden');
+
+        $(document).ready(function() {
+            let maxWysokosc = 0;
+            let maxSzerokosc = 0;
+        
+            // Znajdź wszystkie elementy w kontenerze #elements
+            $('#elements > div').each(function() {
+                const wysokosc = $(this).outerHeight();
+                const szerokosc = $(this).outerWidth();
+                if (wysokosc > maxWysokosc) maxWysokosc = wysokosc;
+                if (szerokosc > maxSzerokosc) maxSzerokosc = szerokosc;
+            });
+        
+            // Ustaw wysokość i szerokość dla wszystkich elementów
+            $('#elements > div').css({
+                'height': maxWysokosc + 'px',
+                'width': maxSzerokosc + 'px'
+            });
+        });
+
+        socket.emit('startup', 'index');
+
+        let startupTry = 0;
+        socket.on('startup', function(response, additionalData1, userInfo, announcementInfo) {
+            if(response === 'auth-redirection') {
+                window.location.href = '/logout';
+            } else if(response === 'db-err') {
+                
+                // Retry
+                if(startupTry < 3) {
+                    startupTry++;
+                    socket.emit('startup', 'index');
+                } else {
+                    // Nie udało się połączyć z bazą danych
+                    // Odśwież stronę
+                    window.location.reload();
+                }
+            } else if(response === 'banned') {
+                // Zbanowany
+                $('#bannedScreen').removeClass('hidden');
+
+            } else if(response === 'success' && additionalData1 && userInfo) {
+
+                if(additionalData1.length < 1) {
+                    $('#bannedScreen').removeClass('hidden');
+                    return;
+                }
+
+                $('.imienazwisko').text(userInfo.imie + ' ' + userInfo.nazwisko);
+                $('.inicjaly').text(userInfo.inicjaly);
+
+                $('#elements').empty();
+
+                if(announcementInfo) {
+
+                    $("#infoBanner p").html(announcementInfo.tresc);
+                    $('#infoBanner i').addClass(announcementInfo.ikonka);
+                    if(announcementInfo.typ === "info") {
+                        $('#infoBanner').addClass('bg-blue-300 dark:bg-blue-600 text-blue-800 dark:text-blue-50');
+                        $('#closeInfoBanner').addClass('text-blue-800 dark:text-blue-50 hover:bg-blue-400 dark:hover:bg-blue-500');
+                    } else if(announcementInfo.typ === "warning") {
+                        $('#infoBanner').addClass('bg-yellow-100 dark:bg-yellow-800 text-yellow-700 dark:text-yellow-200');
+                        $('#closeInfoBanner').addClass('text-yellow-700 dark:text-yellow-200 hover:bg-yellow-200 dark:hover:bg-yellow-700');
+                    } else if(announcementInfo.typ === "danger") {
+                        $('#infoBanner').addClass('bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-200');
+                        $('#closeInfoBanner').addClass('text-red-700 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-700');
+                    } else if(announcementInfo.typ === "success") {
+                        $('#infoBanner').addClass('bg-green-100 dark:bg-green-800 text-green-700 dark:text-green-100');
+                        $('#closeInfoBanner').addClass('text-green-700 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-700');
+                    } else if(announcementInfo.typ === "neutral") {
+                        $('#infoBanner').addClass('bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-100');
+                        $('#closeInfoBanner').addClass('text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700');
+                    } else if(announcementInfo.typ === "purple") {
+                        $('#infoBanner').addClass('bg-violet-100 dark:bg-violet-800 text-violet-800 dark:text-violet-100 ');
+                        $('#closeInfoBanner').addClass('text-violet-700 dark:text-violet-200 hover:bg-violet-200 dark:hover:bg-violet-700');
+                    }
+
+                    $('#infoBanner').addClass('flex');
+                    $('#infoBanner').removeClass('hidden');
+                }
+
+                for(let i = 0; i < additionalData1.length; i++) {
+                    $('#elements').append('<a href="/' + additionalData1[i].url + '"><div class="flex flex-row sm:flex-col sm:w-64 sm:aspect-square bg-gray-50 dark:bg-gray-850 rounded-md m-4 mb-2 sm:p-4 p-4 cursor-pointer transition duration-200 shadow-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 sm:items-center sm:justify-center"><i class="' + additionalData1[i].fa_ikonka + ' text-4xl sm:text-8xl text-gray-700 dark:text-gray-300 sm:self-center content-center"></i><p class="sm:text-xl text-2xl font-semibold sm:mt-4 mt-1 text-gray-700 dark:text-gray-300 sm:text-center text-start ml-4 sm:ml-0 content-center">' + additionalData1[i].nazwa_wyswietlana + '</p></div></a>');
+                }
+
+                if(userInfo.maintenanceModeAccess && userInfo.maintenanceModeAccess === true) {
+                    $("#infoBanner p").html('Uzyskujesz dostęp do usługi z uprawnieniami administratora podczas przerwy technicznej.');
+                    $('#infoBanner i').addClass('fa-solid fa-exclamation-triangle');
+
+                    $('#infoBanner').addClass('bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-200');
+                    $('#closeInfoBanner').addClass('text-red-700 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-700');
+                }
+
+                if(userInfo.koszty) {
+
+                    if(userInfo.koszty.wydanoFunkcje.length === 0) {
+                        $('#costsList').html('<p class="text-sm text-gray-500 dark:text-gray-500 mt-1 italic">Brak usług</p>');
+                        
+                    } else {
+                        for(let i = 0; i < userInfo.koszty.wydanoFunkcje.length; i++) {
+                                $('#costsList').append('<div id="costsElL' + i + '" class="flex flex-row cursor-default mr-5"><div class="rounded-full bg-' + userInfo.koszty.wydanoFunkcje[i].kolor + ' h-2 w-2 mt-1.5"></div><p class="text-sm text-gray-700 dark:text-gray-400 ml-2 hover:font-semibold">' + userInfo.koszty.wydanoFunkcje[i].nazwa_wyswietlana + '</p></div>');
+                                
+                                if(i < 1) {
+                                //                      <div id=""                  class="rounded-full bg-yellow-400                                     h-3 w-[32%]                                               hover:ring-2 hover:ring-gray-100"></div>
+                                $('#costsBars').append('<div id="costsElB' + i + '" class="rounded-full bg-' + userInfo.koszty.wydanoFunkcje[i].kolor + ' h-3 hover:ring-2 hover:ring-gray-100" style="width: ' + userInfo.koszty.wydanoFunkcje[i].procent + '%"></div>'); 
+                            } else {
+                                $('#costsBars').append('<div id="costsElB' + i + '" class="rounded-full bg-' + userInfo.koszty.wydanoFunkcje[i].kolor + ' h-3 hover:ring-2 hover:ring-gray-100 -ml-2" style="width: ' + userInfo.koszty.wydanoFunkcje[i].procent + '%"></div>'); 
+                            }
+                        }
+                    }
+                    
+                    $('.costsLimit').html(userInfo.koszty.limit.toFixed(2).toString().replace('.', ',').replace(',00', ''));
+                    $('#costsUsed').html(parseFloat(userInfo.koszty.wydano).toFixed(2).toString().replace('.', ',').replace(',00', ''));
+                    $('#costsResetDate').html(userInfo.koszty.reset);
+                }
+
+                if(userInfo.uzytkownikOd) {
+                    $('#uzytkownikOd').html(userInfo.uzytkownikOd);
+                }
+
+                if(userInfo.supportInviteLink) {
+                    $('#discord_invite').removeClass('hidden');
+                    $('#discord_invite').prop('href', userInfo.supportInviteLink);
+                }
+
+            } else {
+                // console.log('Startup failed - unknown error');
+                window.location.href = '/';
+            }
+
+        });
+
+    </script>
+
+
+
+
+    <script src="/flowbite/flowbite.min.js"></script>
+    <script src="https://kit.fontawesome.com/eef8afdd03.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="./css/global.css"></script>
+
+    <script>
+        $(window).on("load", function(){
+            setTimeout(function() {
+                $('#preloader').addClass('fadeOut');
+
+                setTimeout(function() {
+                    $('#preloader').addClass('hidden');
+                }, 150); // Opóźnienie 500ms
+
+            }, 500); // Opóźnienie 500ms
+        });
+    </script>
+
+<!-- 100% privacy-first analytics -->
+<script data-collect-dnt="true" async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+<noscript>Włącz obsługę JavaScript</noscript>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logowanie</title>
+
+    <link rel="stylesheet" href="./css/output.css" type="text/css">
+    <script src="/jquery/jquery.js"></script>
+
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Co-pilot" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <style>
+        html {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        #screen {
+            background-image: url('./img/book-with-green-board-background.jpg');
+            background-size: cover;
+        }
+
+        /* DO NOT load background image when screen width is less than md: */
+        @media (max-width: 768px) {
+            #screen {
+                background-image: none;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+    
+
+    
+    <script src="/socketio/socket.io.js"></script>
+    
+    <script>
+        const socket = io();
+    </script>
+
+    <script src="/flowbite/flowbite.min.js"></script>
+    <script src="https://kit.fontawesome.com/eef8afdd03.js" crossorigin="anonymous"></script>
+
+
+    <div id="screen" class="h-svh overflow-hidden sm:content-center">
+            <!-- <img src="./img/book-with-green-board-background.jpg" alt="Zdjęcie w tle - tablica szkolna" class="w-full h-full object-cover absolute z-0 hidden md:block"> -->
+            <a href="https://www.freepik.com">
+            <div class="md:flex hidden absolute bottom-0 left-0 mb-4 ml-4">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 95 80" class="size-10 content-start mr-3" width="95" height="80" fill="#FFFFFF"><title>Freepik</title><path fill="#FFFFFF" d="M81.857 23.696c-.117-.117-.031-.316.134-.316h.755c6.152-.621 11.29-4.573 11.29-11.578C94.036 3.728 87.48 0 79.974 0H34.28a.852.852 0 0 0-.854.85v35.829c0 .47.384.849.854.849h11.23a.852.852 0 0 0 .854-.85V25.24c0-.47.384-.85.854-.85h17.83c1.014 0 1.976.433 2.65 1.184l10.396 11.67.642.287h14.82c.76 0 1.143-.91.61-1.449l-12.309-12.38v-.006Zm-4.684-7.72H47.221a.852.852 0 0 1-.854-.85V9.7c0-.47.384-.85.854-.85h29.673c2.743 0 4.538 1.336 4.538 3.454 0 2.45-1.68 3.674-4.259 3.674v-.003ZM13.735 8.577H27.3c.47 0 .848-.382.848-.85V.85A.847.847 0 0 0 27.3 0H.848A.85.85 0 0 0 0 .85v35.832c0 .47.381.849.848.849h11.106c.47 0 .848-.382.848-.85l.006-13.03c0-.515.417-.928.927-.928H27.3c.47 0 .848-.383.848-.85v-6.708c0-.47-.381-.849-.848-.849H13.735a.927.927 0 0 1-.927-.928V9.51c0-.514.417-.928.927-.928v-.006ZM34.692 42.223H.85a.85.85 0 0 0-.85.849v35.832c0 .47.382.85.85.85h11.178a.85.85 0 0 0 .85-.85v-11.86c0-.24.193-.432.433-.432h21.435c8.588 0 15.1-4.47 15.1-12.368 0-7.899-6.512-12.021-15.154-12.021Zm-1.628 15.982H13.731a.85.85 0 0 1-.85-.849V51.93c0-.47.383-.85.85-.85h19.055c2.731 0 4.517 1.336 4.517 3.454 0 2.45-1.672 3.675-4.239 3.675v-.004ZM94.866 78.737 80.4 59.67a1.102 1.102 0 0 1 .067-1.416L94.13 43.337a.664.664 0 0 0-.493-1.111H81.818c-.314 0-.61.13-.823.36L67.805 57.02h-.007a.235.235 0 0 1-.172.082h-.137V43.008a.787.787 0 0 0-.788-.785H55.325a.787.787 0 0 0-.788.785v36.024c0 .399.324.722.725.722H66.7a.787.787 0 0 0 .788-.785v-7.687l4.53-4.825s.045-.066.144-.066h.648c.08 0 .128.063.128.063l9.671 12.853c.21.279.54.443.89.443h10.86a.635.635 0 0 0 .51-1.019l-.004.006Z"></path></svg>
+                <p class="text-start text-white content-center text-sm select-none">Zdjęcie pochodzi z<br><span class="font-medium">Freepik</span></p>
+            </div>
+            </a>
+            
+            <form action="/authorize" method="post">
+            <div id="loginBox" class="overflow-hidden h-svh w-svw bg-white dark:bg-gray-850 px-4 pb-4 sm:max-h-96 sm:h-fit sm:max-w-96 sm:rounded-lg sm:shadow-md sm:mx-auto">
+                <div id="loadingBar" class="loadingbar bg-gray-300 dark:bg-gray-750 w-full hidden"><div></div></div>
+
+                <div class="flex justify-center items-center h-20">
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-300 select-none">Zaloguj się</h1>
+                </div>
+
+                <div id="error" class="bg-red-400 dark:bg-red-700 border border-red-700 rounded-md p-2 mb-4 select-none text-red-700 dark:text-red-300 hidden">
+                    <i class="fas fa-exclamation-circle mr-2 content-start justify-center mt-0.5"></i>
+                    <p class="text-sm text-start justify-center">Wprowadzone dane logowania są niepoprawne</p>
+                </div>
+
+                <script>
+                    $(document).ready(function() {
+                        var urlParams = new URLSearchParams(window.location.search);
+                        if (urlParams.get('error') === '1') {
+                            $('#error').removeClass('hidden');
+                            $('#error').addClass('flex');
+                        } else if(urlParams.get('error') === '2') {
+                            $('#error').html('<i class="fas fa-exclamation-circle mr-2 content-start justify-center mt-0.5"></i><p class="text-sm text-start justify-center">Nie udało się nawiązać połączenia z bazą danych</p>')
+                            $('#error').removeClass('hidden');
+                            $('#error').addClass('flex');
+                        }
+                    });
+                </script>
+
+                <div class="flex flex-col justify-center items-center">
+                    <!-- <input type="text" name="login" id="login" placeholder="Login / adres e-mail" class="p-2 border border-gray-300 rounded-md focus:ring-0 focus:border-2 focus:border-orange-500"> -->
+                    
+                    <div class="relative z-0 w-full mb-3 group" style="max-width: 72rem; margin-left: auto; margin-right: auto;">
+                        <input type="login" name="login" id="login" class="block py-2.5 px-2.5 w-full text-sm text-gray-900 bg-transparent border border-gray-200 dark:border-gray-700 appearance-none focus:outline-none focus:ring-0 focus:border-orange-500 focus:dark:border-violet-700 peer rounded-md focus:border-2 mx-auto dark:text-gray-50" placeholder=" " required />
+                        <label for="login" class="bg-white dark:bg-gray-850 absolute text-sm text-gray-500 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] peer-focus:font-medium peer-focus:text-orange-500 dark:peer-focus:text-violet-700 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 ml-1 px-2 cursor-text select-none block">Login / adres e-mail</label>
+                    </div>
+
+                    <div class="relative z-0 w-full mb-4 group" style="max-width: 72rem; margin-left: auto; margin-right: auto;">
+                        <input type="password" name="password" id="password" class="block py-2.5 px-2.5 w-full text-sm text-gray-900 dark:text-gray-50 bg-transparent border border-gray-200 dark:border-gray-700 appearance-none focus:outline-none focus:ring-0 focus:border-orange-500 dark:focus:border-violet-700 peer rounded-md focus:border-2 mx-auto" placeholder=" " required />
+                        <label for="password" class="bg-white dark:bg-gray-850 absolute text-sm text-gray-500 dark:text-gray-200 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] peer-focus:font-medium peer-focus:text-orange-500 dark:peer-focus:text-violet-700 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 ml-1 px-2 cursor-text select-none block">Hasło</label>
+                    </div>
+
+                    <button id="loginButton" class="mb-5 bg-orange-500 dark:bg-violet-700 hover:bg-orange-400 hover:dark:bg-violet-600 text-white dark:text-gray-100 font-bold py-2 px-4 rounded-md self-end transition duration-200 shadow">Zaloguj się <i class="ml-2 fas fa-sign-in-alt"></i></button>
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <!-- Hash the password client-side before sending request? -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <script src="./css/global.css"></script>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+<!-- 100% privacy-first analytics -->
+<script data-collect-dnt="true" async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+
+</body>
+</html>

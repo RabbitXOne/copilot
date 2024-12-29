@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "oe0928pd28");
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator prezentacji z AI</title>
+
+    <link rel="stylesheet" href="./css/output.css" type="text/css">
+    <script src="/jquery/jquery.js"></script>
+
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Co-pilot" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <style>
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .loadingbar {
+            height: 4px;
+            margin-bottom: -4px;
+            overflow: hidden;
+            position: relative; /* Added */
+        }
+        
+        .loadingbar div:before {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #fff;
+            animation: box-1 2100ms cubic-bezier(0.65, 0.81, 0.73, 0.4) infinite;
+        }
+        
+        .loadingbar div:after {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #fff;
+            animation: box-2 2100ms cubic-bezier(0.16, 0.84, 0.44, 1) infinite;
+            animation-delay: 1150ms;
+        }
+        
+        @keyframes box-1 {
+            0% {
+                left: -35%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 100%;
+                right: -90%;
+            }
+        }
+        
+        @keyframes box-2 {
+            0% {
+                left: -200%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 107%;
+                right: -8%;
+            }
+        }
+        
+        .loadingSpinner {
+            animation: rotate 2s linear infinite;
+        }
+        
+        .loadingSpinner .spinnerPath {
+          stroke-linecap: round;
+          animation: dash 1.5s ease-in-out infinite;
+        }
+
+        @keyframes closeModal {
+            from {
+                opacity: 1;
+                scale: 1;
+            }
+            to {
+                opacity: 0;
+                scale: 0.9;
+            }
+            
+        }
+
+        @keyframes openModal {
+            from {
+                opacity: 0;
+                scale: 0.9;
+            }
+            to {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+        
+        @keyframes rotate {
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        
+        @keyframes dash {
+          0% {
+            stroke-dasharray: 1, 150;
+            stroke-dashoffset: 0;
+          }
+          50% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -35;
+          }
+          100% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -124;
+          }
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.15s ease-in-out;
+        }
+
+        .fadeOut {
+            animation: fadeOut 0.15s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        #progress {
+            -webkit-transition: width 0.2s ease-in-out;
+            -moz-transition: width 0.2s ease-in-out;
+            -o-transition: width 0.2s ease-in-out;
+            transition: width 0.2s ease-in-out;
+  
+        }
+
+        .progress-ring__circle {
+            transition: 0.5s stroke-dashoffset, 0.5s stroke;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .progress-ring__text {
+            transition: 0.5s fill;
+            font-size: 24px;
+            fill: white;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .progress-ring__background {
+            stroke: #374151; /* Light gray color for the background circle */
+        }
+
+
+
+
+
+
+
+
+
+
+/* On mouse-over, add a grey background color */
+.checkDiv:hover input ~ .checkmark {
+  background-color: #374151;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkDiv input:checked ~ .checkmark {
+  background-color: #6d28d9;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkDiv input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkDiv .checkmark:after {
+  left: 10px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+        
+    </style>
+
+</head>
+<body class="bg-gray-900">
+    
+    <div id="preloader" class="hidden"></div>
+    
+    <script src="/socketio/socket.io.js"></script>
+    <script>
+        const socket = io();
+    </script>
+
+    <div id="modalContainer" class="hidden fixed top-0 left-0 w-svw h-svh bg-gray-900 bg-opacity-50 z-30 items-center justify-center" style="backdrop-filter: blur(4px);">
+        <div id="modalBox" class="bg-white dark:bg-gray-850 sm:dark:border-gray-700 dark:sm:border sm:rounded-lg sm:shadow-md justify-center items-center max-w-2xl w-full h-full sm:h-fit sm:max-h-[75%] sm:w-4/5 overflow-auto">
+            
+            <div id="selectTematy" class="p-5 flex flex-col">
+
+                <!-- <h2 class="text-gray-200 font-semibold text-lg mb-3">1. Temat lekcji</h2>
+    
+                <label class="checkDiv block relative pl-8 mb-3 cursor-pointer select-none text-gray-300" value="Hello!">Three
+                    <input type="checkbox" class="absolute opacity-0 cursor-pointer w-0 h-0">
+                    <span class="checkmark absolute top-0 left-0 h-6 w-6 bg-gray-750 rounded transition duration-150"></span>
+                </label>
+                <label class="checkDiv block relative pl-8 mb-3 cursor-pointer select-none text-gray-300" value="xx!">Three
+                    <input type="checkbox" class="absolute opacity-0 cursor-pointer w-0 h-0">
+                    <span class="checkmark absolute top-0 left-0 h-6 w-6 bg-gray-750 rounded transition duration-150"></span>
+                </label>
+                <label class="checkDiv block relative pl-8 mb-3 cursor-pointer select-none text-gray-300" value="Three">Three
+                    <input type="checkbox" class="absolute opacity-0 cursor-pointer w-0 h-0">
+                    <span class="checkmark absolute top-0 left-0 h-6 w-6 bg-gray-750 rounded transition duration-150"></span>
+                </label> -->
+
+                <div class="flex flex-col items-center justify-center min-h-fit max-h-24 overflow-auto p-4">
+                    <svg class="loadingSpinner z-20 text-center size-12" viewBox="0 0 50 50">
+                        <circle class="spinnerPath stroke-gray-400 dark:stroke-gray-300" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                    </svg>
+                </div>
+
+
+
+            </div>
+
+            <div class="sticky bottom-0 p-5 bg-gray-850 border-t border-gray-700">
+                <button id="anulujWyborTematow" class="border border-gray-700 p-2 rounded-md px-6 text-gray-300 hover:bg-gray-800 bg-gray-850 transition duration-150 mr-3" onclick="anulujWyborTematow()">Anuluj</button>
+                <button id="zatwierdzWyborTematow" class="p-2 rounded-md px-6 text-gray-900 hover:bg-gray-200 bg-gray-100 transition duration-150 disabled:bg-gray-700 disabled:text-gray-500" onclick="zatwierdzWyborTematow()" disabled>Kontynuuj</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="screen-main" class="flex flex-col w-svw h-svh min-h-fit p-3">
+
+        <div id="previousPresentations" class="mb-3">
+            <h2 class="text-gray-300 font-semibold text-lg mb-2">Poprzednie prezentacje</h2>
+
+            <div class="previousPresentationsContainer flex gap-3 flex-wrap max-[639px]:justify-center">
+                <div class="w-72 h-20 animate-pulse bg-gray-800 rounded-md flex-none"></div>
+                <div class="w-72 h-20 animate-pulse bg-gray-800 rounded-md flex-none"></div>
+                <div class="w-72 hidden md:block h-20 animate-pulse bg-gray-800 rounded-md flex-none"></div>
+            </div>
+
+            <div class="flex items-center justify-center my-4">
+                <div class="flex-grow border-t border-gray-700"></div>
+                <span class="mx-4 text-gray-300" style="font-variant: all-small-caps">UTWÓRZ NOWĄ PREZENTACJĘ</span>
+                <div class="flex-grow border-t border-gray-700"></div>
+            </div>
+            
+        </div>
+
+        <div id="createStep1" class="mb-4">
+            <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mb-0.5 select-none">1. Wybierz przedmiot</label>
+
+            <button id="wybierzPrzedmiot" data-dropdown-toggle="dropdownPrzedmiot" class="flex-grow rounded-md select-none text-gray-500 border dark:text-gray-400 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-850 hover:bg-gray-100 hover:dark:bg-gray-800 focus:border-2 focus:outline-none focus:border-orange-500 focus:dark:border-violet-700 font-normal text-sm px-5 py-2.5 text-center items-center disabled:cursor-not-allowed transition duration-150 w-full" type="button">Wyszukaj przedmiot<i class="fa-solid fa-chevron-down ms-2"></i></button>
+
+            <div id="dropdownPrzedmiot" class="z-10 hidden bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-600 shadow w-[92%] rounded-md">
+                <ul id="przedmiotList" class="py-2 text-sm text-gray-700 dark:text-gray-300" aria-labelledby="wybierzPrzedmiot">
+                
+                <div class="flex flex-col items-center justify-center min-h-fit max-h-24 overflow-auto p-4">
+                    <svg class="loadingSpinner z-20 text-center size-12" viewBox="0 0 50 50">
+                        <circle class="spinnerPath stroke-gray-400 dark:stroke-gray-300" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                    </svg>
+                </div>
+                </ul>
+            </div>
+
+
+        </div>
+
+        <div id="createStep2" class="mb-4 hidden">
+            <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mb-0.5 select-none">2. Wybierz tematy</label>
+
+            <button id="wybierzTemat" class="flex-grow rounded-md select-none text-gray-500 border dark:text-gray-400 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-850 hover:bg-gray-100 hover:dark:bg-gray-800 focus:border-2 focus:outline-none focus:border-orange-500 focus:dark:border-violet-700 font-normal text-sm px-5 py-2.5 text-center items-center disabled:cursor-not-allowed transition duration-150 w-full" type="button">Wyszukaj temat z podręcznika<i class="fa-solid fa-chevron-down ms-2"></i></button>
+
+        </div>
+
+        <div id="createStep2Alternative" class="mb-4 hidden">
+            <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mb-0.5 select-none">2. Opisz czego dotyczy Twoja prezentacja</label>
+
+            <div class="relative z-0 w-full mb-3 group mt-3">
+                <input type="pptxsubject" name="pptxsubject" id="pptxsubject" class="block py-2.5 px-2.5 w-full text-sm bg-transparent border border-gray-700 appearance-none focus:outline-none focus:ring-0 focus:border-violet-700 peer rounded-md focus:border-2 mx-auto text-gray-50" placeholder=" " required />
+                <label for="pptxsubject" class="bg-gray-900 absolute text-sm text-gray-300 duration-300 transform -translate-y-6 scale-75 top-2.5 z-10 origin-[0] peer-focus:font-medium peer-focus:text-violet-700 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 ml-1 px-2 cursor-text select-none block">Podaj temat prezentacji</label>
+            </div>  
+
+        </div>
+        <div id="createStep3" class="mb-4 hidden">
+            <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mb-0.5 select-none">3. Wybierz model AI (opcjonalnie)</label>
+
+            <button id="wybierzModel" data-dropdown-toggle="dropdownModel" class="max-h-fit flex-grow rounded-md select-none text-gray-500 border dark:text-gray-400 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-850 hover:bg-gray-100 hover:dark:bg-gray-800 focus:border-2 focus:outline-none focus:border-orange-500 focus:dark:border-violet-700 font-normal text-sm px-5 py-2.5 text-center items-center disabled:cursor-not-allowed transition duration-150 w-full" type="button">Wybierz model AI<i class="fa-solid fa-chevron-down ms-2"></i></button>
+
+            <div id="dropdownModel" class="z-10 hidden bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-600 shadow w-[92%] rounded-md">
+                <ul id="modelList" class="py-2 text-sm text-gray-700 dark:text-gray-300" aria-labelledby="wybierzModel">
+                
+                <div class="flex flex-col items-center justify-center min-h-fit max-h-24 overflow-auto p-4">
+                    <svg class="loadingSpinner z-20 text-center size-12" viewBox="0 0 50 50">
+                        <circle class="spinnerPath stroke-gray-400 dark:stroke-gray-300" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                    </svg>
+                </div>
+                </ul>
+            </div>
+
+            
+            
+        </div>
+        <div id="createStep4" class="mb-4 hidden">
+            <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mb-0.5 select-none">4. Podaj więcej szczegółów o swojej prezentacji</label>
+
+            <textarea id="wiecejSzegolow" class="min-h-14 max-h-48 w-full border bg-gray-900 border-gray-700 rounded-md p-2 mt-2 text-sm font-normal text-gray-400 focus:ring-0 ring-0 focus:border-2 focus:border-violet-700 transition duration-200" placeholder="Podaj informacje jak ma wyglądać prezentacja, o czym dokładnie ma być, jakie ilustracje dodać oraz jak długa powinna być"></textarea>
+            
+        </div>
+        
+        <div id="pptxInfo" class="hidden">
+            <p class="text-center text-gray-700 text-sm mt-3">Przewidywany koszt wygenerowania prezentacji przy obecnych ustawieniach wynosi <span id="predictedPrice">---</span> zł</p>
+
+            <p class="text-center text-gray-700 text-sm mt-3">Prezentacja będzie dostępna do pobrania w formacie .pptx.</p>
+        </div>
+
+        <div style="flex: 1; flex-grow: 3;"></div>
+        
+        <div id="startGeneratingPptx" class="mt-auto flex-col p-3 hidden"> <!-- Flex -->
+            <button id="startGeneratingPptxBtn" class="rounded-md p-2 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-700 disabled:text-gray-400 transition duration-150 select-none" onclick="generatePresentation()" disabled>Wygeneruj prezentację <i class="fa-solid fa-arrow-right ms-3"></i></button>
+            <p class="text-center text-gray-700 text-xs mt-2 select-none">LLM mogą popełniać błędy</p>
+
+        </div>
+    </div>
+
+    <div id="screen-failed" class="hidden flex-col h-svh text-center justify-center items-center p-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#dc2626" class="size-12"><path d="M140.6 21.2C154.1 7.7 172.4 .1 191.5 .1l129 0c19.1 0 37.4 7.6 50.9 21.1L490.8 140.6c13.5 13.5 21.1 31.8 21.1 50.9l0 129c0 19.1-7.6 37.4-21.1 50.9L371.4 490.8c-13.5 13.5-31.8 21.1-50.9 21.1l-129 0c-19.1 0-37.4-7.6-50.9-21.1L21.2 371.4C7.7 357.9 .1 339.6 .1 320.5l0-129c0-19.1 7.6-37.4 21.1-50.9L140.6 21.2zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/></svg>
+    
+        <h2 class="text-center font-semibold mt-3 text-2xl text-gray-200">Nie udało się wygenerować prezentacji :(</h2>
+        <p id="failed-moreinfo" class="max-w-96 mt-2 text-gray-400">Coś poszło nie tak. Spróbuj ponownie, a jeśli problem nadal występuje skontaktuj się z administratorem serwisu.</p>
+        
+        <!-- Error details -->
+        <div id="errorDetails" class="mt-8 p-3 bg-gray-800 rounded-md">
+            <h3 class="text-gray-300 font-semibold text-lg">Szczegóły błędu:</h3>
+            <p id="errorDetailsText" class="text-gray-400 mt-2"></p>
+        </div>
+
+    </div>
+    <div id="screen-success" class="hidden flex-col h-svh text-center justify-center items-center p-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" fill="#84cc16" class="size-12"><path d="M96 80c0-26.5 21.5-48 48-48l288 0c26.5 0 48 21.5 48 48l0 304L96 384 96 80zm313 47c-9.4-9.4-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L409 161c9.4-9.4 9.4-24.6 0-33.9zM0 336c0-26.5 21.5-48 48-48l16 0 0 128 448 0 0-128 16 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48L48 480c-26.5 0-48-21.5-48-48l0-96z"/></svg>
+    
+        <h2 class="text-center font-semibold mt-3 text-2xl text-gray-200">Sukces!</h2>
+        <p id="failed-moreinfo" class="max-w-96 mt-2 text-gray-400">Plik powinien za chwilę zostać pobrany. Jeśli tak się nie stanie, kliknij <a href="" id="pptxDlLink" class="hover:text-gray-300 transition duration-150 underline">tutaj</a></p>
+        
+    </div>
+    <div id="screen-loading" class="hidden flex-col h-svh">
+
+        <div class="h-1 p-0 m-0 bg-gray-700 overflow-hidden loadingbar"><div></div></div>
+
+        <div class="text-center mt-[15%]">
+            <h2 class="text-gray-50 font-medium text-lg">Twoja prezentacja jest przygotowywana!</h2>
+            <p class="text-gray-400">Może to potrwać kilka minut</p>
+        </div>
+        
+        <div id="progressAnimation" class="text-center mt-[10%]">
+            <style>
+                .text-slider {
+                    height: 40px; /* Dopasuj wysokość do wysokości jednej linijki tekstu */
+                    overflow: hidden;
+                    position: relative;
+                }
+                .text-slider ul {
+                    position: absolute;
+                    width: 100%;
+                    transition: transform 0.2s ease-in-out;
+                }
+                .text-slider li {
+                    list-style: none;
+                    padding: 10px; /* Padding wokół tekstu */
+                    text-align: center;
+                }
+            </style>
+            <div class="text-slider bg-gray-900 text-gray-300">
+                <ul id="text-list">
+                    <li>Przygotowuję prezentację...</li>
+                    <li>Potrwa to kilka chwil...</li>
+                    <li>Czytam podręcznik...</li>
+                    <li>Sprawdzam źródła...</li>
+                    <li>Piszę kolejne slajdy...</li>
+                    <li>Czytam temat z podręcznika...</li>
+                    <li>Dodaję zdjęcia...</li>
+                    <li>Sprawdzam źródła...</li>
+                    <li>Przygotowuję wersję roboczą prezentacji...</li>
+                    <li>Tworzę plik PPTX...</li>
+                    <li>Prawie gotowe!</li>
+                </ul>
+            </div>
+            
+            <script>
+                $(document).ready(function() {
+                    const $textList = $('#text-list');
+                    const itemHeight = $textList.find('li').outerHeight(); // Wysokość jednego elementu listy
+                    const interval = 6000; // Czas wyświetlania jednej linijki (w ms)
+        
+                    function scrollText() {
+                        $textList.animate({
+                            'marginTop': `-${itemHeight}px`
+                        }, 400, function() {
+                            // Przenieś pierwszy element na koniec listy
+                            $textList.find('li:first').appendTo($textList);
+                            $textList.css('marginTop', 0); // Resetuj margines do zera
+                        });
+                    }
+        
+                    setInterval(scrollText, interval);
+                });
+            </script>
+        </div>
+
+        <div style="flex: 1; flex-grow: 3;"></div>
+
+        <div id="startGeneratingTest" class="flex mt-auto flex-col p-3">
+            <p class="text-center text-gray-400 text-sm mt-2 select-none">Nie zamykaj tego okna przeglądarki</p>
+        </div>
+    </div>
+
+    <script src="/flowbite/flowbite.min.js"></script>
+    <script src="https://kit.fontawesome.com/eef8afdd03.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="./css/global.css"></script>
+    <script src="./js/prezentacje.js"></script>
+
+    <script>
+        
+        $(window).on("load", function(){
+            setTimeout(function() {
+                $('#preloader').addClass('fadeOut');
+
+                setTimeout(function() {
+                    $('#preloader').addClass('hidden');
+                }, 150); // Opóźnienie 500ms
+
+            }, 500); // Opóźnienie 500ms
+        });
+    </script>
+
+</body>
+</html>

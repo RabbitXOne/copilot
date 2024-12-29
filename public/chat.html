@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "oe0928pd28");
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Czat AI - Szkolny co-pilot</title>
+
+    <link rel="stylesheet" href="./css/output.css" type="text/css">
+    <script src="/jquery/jquery.js"></script>
+
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Co-pilot" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <style>
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }   
+
+        .loadingbar {
+            height: 4px;
+            margin-bottom: -4px;
+            overflow: hidden;
+            position: relative; /* Added */
+        }
+        
+        .loadingbar div:before {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #ff5a1f;
+            animation: box-1 2100ms cubic-bezier(0.65, 0.81, 0.73, 0.4) infinite;
+        }
+        
+        .loadingbar div:after {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #ff5a1f;
+            animation: box-2 2100ms cubic-bezier(0.16, 0.84, 0.44, 1) infinite;
+            animation-delay: 1150ms;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .loadingbar div:before {
+                background: #6d28d9;
+            }
+            .loadingbar div:after {
+                background: #6d28d9;
+            }
+        }
+        
+        @keyframes box-1 {
+            0% {
+                left: -35%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 100%;
+                right: -90%;
+            }
+        }
+        
+        @keyframes box-2 {
+            0% {
+                left: -200%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 107%;
+                right: -8%;
+            }
+        }
+        
+        .loadingSpinner {
+            animation: rotate 2s linear infinite;
+        }
+        
+        .loadingSpinner .spinnerPath {
+          stroke-linecap: round;
+          animation: dash 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes rotate {
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        
+        @keyframes dash {
+          0% {
+            stroke-dasharray: 1, 150;
+            stroke-dashoffset: 0;
+          }
+          50% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -35;
+          }
+          100% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -124;
+          }
+        }
+        
+        .requesttime {
+            margin-bottom: -20px;
+            font-size: 0.7rem;
+            padding-top: 0.1rem;
+        }
+
+        .newMessage {
+            animation: showFromBottom 0.2s ease-in-out;
+        }
+
+        @keyframes showFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(2rem);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes showFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-2rem);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes hideToTop {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-2rem);
+            }
+
+        }
+
+        @keyframes showFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-4rem);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes hideToLeft {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(-4rem);
+            }
+
+        }
+
+        @keyframes closeModal {
+            from {
+                opacity: 1;
+                scale: 1;
+            }
+            to {
+                opacity: 0;
+                scale: 0.9;
+            }
+            
+        }
+
+        @keyframes openModal {
+            from {
+                opacity: 0;
+                scale: 0.9;
+            }
+            to {
+                opacity: 1;
+                scale: 1;
+            }
+        }
+
+        @keyframes bookSelectShow {
+            from {
+                opacity: 0;
+                transform: translate(0, 100%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(0, 0);
+            }
+            
+        }
+
+        @keyframes bookSelectHide {
+            from {
+                opacity: 1;
+                transform: translate(0, 0);
+            }
+            to {
+                opacity: 0;
+                transform: translate(0, 100%);
+            }
+            
+        }
+
+        .fadeIn {
+    animation: fadeIn 0.15s ease-in-out;
+}
+
+.fadeOut {
+    animation: fadeOut 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+
+.input-original {
+    font-weight: 400;
+    font-style: normal;
+}
+
+.hint {
+    color: #797978;
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* On mouse-over, add a grey background color */
+.checkContainer:hover input:not(:disabled):not(:checked) ~ .checkmark {
+    background-color: #e5e7eb;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkContainer input:checked ~ .checkmark {
+    background-color: #ff5a1f;
+}
+
+.checkContainer input:disabled ~ .checkmark {
+    background-color: #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+    .checkContainer:hover input:not(:disabled):not(:checked) ~ .checkmark {
+            background-color: #2b3544;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .checkContainer input:checked ~ .checkmark {
+            background-color: #6d28d9;
+    }
+
+    .checkContainer input:disabled ~ .checkmark {
+        background-color: #18212f;
+    }
+}
+
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkContainer input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkContainer .checkmark:after {
+  left: 0.60rem;
+  top: 0.25rem;
+  width: 0.30rem;
+  height: 0.75rem;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+        
+    </style>
+
+
+
+
+<style>
+
+#chatMessages h1 {
+    font-size: 2.25rem; /* Tailwind `text-4xl` */
+    font-weight: 700; /* `font-bold` */
+}
+
+#chatMessages h2 {
+    font-size: 1.875rem; /* `text-3xl` */
+    font-weight: 700; /* `font-bold` */
+}
+
+#chatMessages h3 {
+    font-size: 1.5rem; /* `text-2xl` */
+    font-weight: 600; /* `font-semibold` */
+}
+
+#chatMessages ul {
+    list-style-type: disc; /* Kropeczki */
+    padding-left: 1.25rem; /* `pl-5` */
+}
+
+#chatMessages ul li {
+    margin-top: 0.25rem; /* Odstępy między elementami listy */
+}
+
+#chatMessages ol {
+    list-style-type: decimal; /* Numeracja */
+    padding-left: 1.25rem; /* `pl-5` */
+}
+
+#chatMessages ol li {
+    margin-top: 0.25rem; /* Odstępy między elementami listy */
+}
+
+#chatMessages blockquote {
+    font-style: italic;
+    padding-left: 1rem;
+    border-left: 4px solid #e2e8f0; /* Lewa linia jako wyróżnik */
+}
+
+#chatMessages pre {
+    background-color: #edf2f7; /* Jasne tło dla kodu */
+    padding: 1rem;
+    border-radius: 0.25rem;
+    overflow-x: auto;
+}
+
+#chatMessages pre code {
+    font-family: monospace;
+}
+
+#chatMessages code {
+    font-family: monospace;
+    background-color: #edf2f7; /* Jasne tło dla kodu inline */
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+@media(prefers-color-scheme: dark) {
+    #chatMessages {
+        color: #e5e7eb; /* Tailwind `text-gray-200` */
+    }
+}
+
+</style>
+
+</head>
+<body>
+
+    <div id="preloader" class="z-50 flex flex-col items-center justify-center h-svh w-svw fixed top-0 left-0 bg-white dark:bg-gray-900">
+        <svg class="loadingSpinner absolute text-center size-12" viewBox="0 0 50 50">
+            <circle class="spinnerPath stroke-gray-950 dark:stroke-slate-300" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+        </svg>
+    </div>
+
+    <script src="/socketio/socket.io.js"></script>
+
+    <script>
+        const socket = io();
+    </script>
+
+    <div id="startScreen" class="absolute top-0 left-0 z-40 flex flex-col h-svh w-svw bg-white dark:bg-gray-900 text-center justify-center">
+
+        <div class="self-center min-w-fit min-h-fit shadow-md dark:shadow-gray-850 border rounded-md border-gray-200 dark:border-gray-700 select-none overflow-hidden">
+            <div id="startScreenLoading" class="loadingbar hidden"><div></div></div>
+
+            <div class="p-8">
+
+            <h2 class="font-bold text-3xl dark:text-gray-300">Rozpocznij czat</h2>
+            <p class="mt-1 text-gray-800 text-md font-normal dark:text-gray-400">Wybierz przedmiot</p><br>
+    
+            <div class="flex">
+                <button id="wybierzPrzedmiotStart" data-dropdown-toggle="dropdownPrzedmiotStart" class="flex-grow min-h-fit rounded-md select-none text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-850 hover:bg-gray-100 hover:dark:bg-gray-800 focus:border-2 focus:outline-none focus:border-orange-500 focus:dark:border-violet-700 font-normal text-sm px-5 py-2.5 text-center items-center transition duration-150 disabled:cursor-no" type="button">Wybierz przedmiot<i class="fa-solid fa-chevron-down ms-2"></i></button>
+                    
+                <div id="dropdownPrzedmiotStart" class="z-10 hidden bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-600 shadow w-44 rounded-md">
+                    <ul id="dropdownPrzedmiotStartList" class="py-2 text-sm text-gray-700 dark:text-gray-300" aria-labelledby="wybierzPrzedmiot">
+
+                    
+                        <div class="flex flex-col items-center justify-center min-h-fit max-h-24 overflow-auto p-4">
+                            <svg class="loadingSpinner z-20 text-center size-12" viewBox="0 0 50 50">
+                                <circle class="spinnerPath stroke-gray-400 dark:stroke-gray-300" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                            </svg>
+                        </div>
+                    </ul>
+                </div>
+                <!-- <label class="block text-xs font-extralight text-gray-500 mb-0.5 select-none">Przedmioty nieznajdujące się na tej liście nie są obsługiwane.</label> -->
+                <button id="startChatBtn" class="ml-3 rounded-md shadow-md bg-orange-500 dark:bg-violet-700 hover:bg-orange-400 hover:dark:bg-violet-800 text-white font-bold transition duration-200 disabled:bg-gray-300 disabled:dark:bg-gray-700 disabled:text-gray-400 disabled:dark:text-gray-500 py-2 px-3.5" disabled><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="flex flex-row h-svh">
+        <div id="sidebar" class="hidden md:flex flex-col bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 min-w-fit select-none">
+            <div class="flex-grow mt-2 pt-2 px-2">
+
+                
+
+
+
+
+                <div id="chatAlreadyStarted" class="hidden text-gray-700 dark:text-gray-400 border border-gray-700 rounded bg-gray-300 dark:bg-gray-850 max-w-48 p-3 select-none">
+                    <i class="fa-solid fa-info-circle text-lg content-start mr-2"></i>
+                    <p class="text-normal text-sm text-start">Aby móc zmienić niektóre z poniższych ustawień, rozpocznij nowy czat.</p>
+                </div>
+
+
+
+
+
+
+
+                <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mt-4 mb-0.5 select-none">Wybierz model AI</label>
+
+                <button id="wybierzModelAi" data-dropdown-toggle="dropdownModelAI" class="flex-grow rounded-md select-none text-gray-500 border dark:text-gray-400 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-850 hover:bg-gray-100 hover:dark:bg-gray-800 focus:border-2 focus:outline-none focus:border-orange-500 focus:dark:border-violet-700 font-normal text-sm px-5 py-2.5 text-center items-center disabled:cursor-not-allowed transition duration-150" type="button"></button>
+
+
+                <div id="dropdownModelAI" class="z-10 hidden bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-600 shadow w-44 rounded-md">
+                    <ul id="modelAIlist" class="py-2 text-sm text-gray-700 dark:text-gray-300" aria-labelledby="wybierzPrzedmiot">
+                    
+                    <div class="flex flex-col items-center justify-center min-h-fit max-h-24 overflow-auto p-4">
+                        <svg class="loadingSpinner z-20 text-center size-12" viewBox="0 0 50 50">
+                            <circle class="spinnerPath stroke-gray-400 dark:stroke-gray-300" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                        </svg>
+                    </div>
+                    </ul>
+                </div>
+
+
+
+                <div id="lastChatsContainer" class="hidden">
+
+                <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mt-4 mb-0.5 select-none">Ostatnie czaty</label>
+                <div id="lastChats" class="flex flex-col">
+                    
+                </div>
+                </div>
+
+                <br><br>
+                <div class="hidden">
+                    <div class="hidden relative pl-9 mb-3 text-sm select-none text-gray-500 dark:text-gray-400 text-wrap max-w-40 opacity-0 cursor-pointer top-0 left-0 h-6 w-6 bg-gray-100 dark:bg-gray-800 rounded-md transition duration-150"></div>
+                    <div class="hidden pl-9 mb-3 cursor-pointer text-sm select-none text-gray-500 dark:text-gray-400 text-wrap max-w-40 opacity-0 h-0 w-0 rounded-md absolute top-0 left-0 bg-gray-100 dark:bg-gray-800 transition duration-150"></div>
+                </div>
+
+
+                <div id="functionSwitches">
+                </div>
+                
+                
+                
+                
+                
+            </div>
+
+<button class="m-1 rounded-md text-xs text-nowrap font-normal bg-transparent hover:bg-gray-100 hover:dark:bg-gray-850 p-1.5 text-red-700 dark:text-red-600 transition duration-200" onclick="toggleModal()"><i class="fa-solid fa-exclamation-triangle mr-1"></i>Zgłoś błąd</button>
+<label class="mx-2 block text-center text-xs font-normal text-gray-500 dark:text-gray-400 mb-2 select-none">LLM mogą popełniać błędy.</label>
+            <div class="border-t border-gray-200 dark:border-gray-700 flex flex-row p-3">
+                <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-300 dark:bg-gray-700 rounded-full">
+                    <span id="inicjaly" class="font-medium text-gray-600 dark:text-gray-300"></span>
+                </div>
+
+                <div class="flex flex-col ms-3 flex-grow max-w-24">
+                    <p class="text-xs font-normal text-gray-500 dark:text-gray-500 whitespace-nowrap overflow-hidden overflow-ellipsis">Zalogowano jako:</p>
+                    <p id="imienazwisko" class="text-sm font-medium text-gray-900 dark:text-gray-400 whitespace-nowrap overflow-hidden overflow-ellipsis">Nieznany użytkownik</p>
+                </div>
+
+                <a href="/logout"><button data-tooltip-target="tooltip-logout"><i class="ml-2 fa-solid fa-right-from-bracket rounded-md bg-white dark:bg-gray-900 hover:bg-gray-200 hover:dark:bg-gray-850 p-2 text-gray-700 dark:text-gray-400 transition duration-200"></i></button></a>
+                <div id="tooltip-logout" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white dark:text-gray-300 transition-opacity delay-500 duration-300 bg-gray-900 rounded-md shadow-sm opacity-0 tooltip dark:bg-gray-800">Wyloguj się<div class="tooltip-arrow" data-popper-arrow></div></div>
+            </div>
+        </div>
+    <div class="flex flex-col h-svh w-full dark:bg-gray-850">
+
+    <div id="navbar" class="flex flex-row content-center w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 dark:text-gray-300 p-4 select-none">
+
+        
+        <button id="sidebarMobileToggle" class="sm:hidden mr-2 dark:text-gray-100"><i class="fa-solid fa-bars"></i></button>
+        
+        <input type="text" name="chatTitle" id="chatTitle" class="inline-block rounded dark:bg-gray-900 dark:hover:bg-gray-850 hover:bg-gray-100 border-0 p-1 hover:cursor-pointer transition duration-150 ring-0 focus:ring-0 focus:border-2 focus:border-orange-500 focus:dark:border-violet-700 focus:dark:bg-gray-850 focus:bg-gray-100 focus:border-dashed" value="Nowy czat" />
+
+        <div class="flex-grow"></div>
+        <a href="?newChat"><button id="startNewChat" class="p-1 px-2 rounded self-end justify-center mr-2 dark:text-gray-100 hover:bg-gray-100 hover:dark:bg-gray-850"><i class="fa-solid fa-plus"></i></button></a>
+
+    </div>
+
+    <div id="chatMessages" class="flex flex-col p-2 overflow-scroll flex-grow dark:bg-gray-850 bg-gray-50">
+    
+        <div class="w-4/5 max-w-fit h-fit p-2 m-2 self-center">
+            <p class="text-sm font-normal italic text-gray-500 dark:text-gray-500 text-center select-none">Tutaj pojawią się wiadomości czatu.</p>
+        </div>
+
+    </div>
+    
+
+    <div id="error" class="min-h-fit bg-red-400 dark:bg-red-800 rounded-md w-4/5 max-w-fit h-fit p-3 m-5 self-center shadow-md border border-red-600 dark:border-red-500 flex select-none text-red-900 dark:text-red-200 duration-150 transition">
+        <i class="fa-solid fa-triangle-exclamation content-start m-1 mr-3"></i>
+        <p id="errorContent" class="text-sm font-normal text-start">Nie udało się połączyć z serwerem.</p>
+    
+    </div>
+    
+    <div id="requestTimer" class="select-none block w-10 min-w-fit h-5 px-1 bg-gray-200 dark:bg-gray-700 ml-auto requesttime -translate-y-6 text-center font-mono text-gray-500 dark:text-gray-400">0.0s</div>
+    <div id="loadingBar" class="loadingbar bg-gray-300 dark:bg-gray-700 -translate-y-1 hidden"><div></div></div>
+
+    <div class="flex bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex-grow m-3 mr-1">
+            <div id="bookSelectContainer" style="display: none; transform: translate(0, -14.75rem);" class="rounded-tl-md rounded-tr-md overflow-hidden absolute h-64">
+            <div id="bookSelect" style="display: none;" class="rounded-tl-md rounded-tr-md absolute h-64 bg-gray-100 dark:bg-gray-800 border-t border-l border-r border-gray-200 dark:border-gray-700 text-sm font-light text-gray-900 dark:text-gray-300 select-none">
+
+                <div id="bs-type" class="flex flex-col items-center justify-center min-h-64">
+                    <i class="fa-solid fa-search text-4xl text-center"></i>
+                    <p class="mt-3 text-xl text-center">Wyszukaj fragment książki...</p>
+                </div>
+
+                <div id="bs-nothingfound" class="flex flex-col items-center justify-center min-h-64">
+                    <i class="fa-regular fa-circle-question text-4xl text-center"></i>
+                    <p class="mt-3 text-xl text-center">Nic nie znaleziono...</p>
+                </div>
+
+                <div id="bs-loading" class="flex flex-col items-center justify-center min-h-64">
+                    <svg class="loadingSpinner z-20 absolute text-center size-12" viewBox="0 0 50 50">
+                        <circle class="spinnerPath stroke-gray-400" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                    </svg>
+                </div>
+
+                <div id="bs-results" class="flex flex-col items-center h-64 overflow-scroll">
+
+                </div>
+
+            </div>
+            </div>
+
+            <div id="bookSelectOpen" class="flex flex-col rounded-tl-md rounded-tr-md w-full border-t border-l border-r border-gray-200 dark:border-gray-700 h-5 text-xs content-center px-2 font-normal text-gray-600 dark:text-gray-400 py-0.5 select-none cursor-pointer transition duration-300 hover:bg-gray-100 hover:dark:bg-gray-850 overflow-hidden text-ellipsis disabled:cursor-not-allowed">
+                <p id="bso-top"><i class="fa-solid fa-angle-up mr-2"></i><span>Wybierz fragment z podręcznika</span></p>
+                <p id="bso-bottom" class=""><i class="fa-solid fa-angle-up mr-2"></i><span>Wybierz fragment z podręcznika</span></p>
+            </div>
+            <input id="typeMessage" type="text" class="rounded-bl-md rounded-br-md ring-0 focus:ring-0 w-full border z-50 border-gray-200 dark:border-gray-700 p-2 block text-sm font-normal text-gray-900 dark:text-gray-300 focus:border-2 focus:border-orange-500 focus:dark:border-violet-700 transition duration-300 col-start-1 col-end-11 h-10 disabled:text-gray-600 disabled:cursor-not-allowed dark:bg-gray-900" placeholder="Wpisz polecenie..." onkeydown="if (event.keyCode === 13) $('#sendMessage').click()">
+        </div>
+        <button id="sendMessage" class="rounded-md self-end bg-orange-500 dark:bg-violet-700 hover:bg-orange-400 hover:dark:bg-violet-600 text-white dark:text-gray-300 font-bold min-w-10 min-h-10 size-10 m-3 ml-1 transition duration-300 shadow-xl disabled:bg-gray-300 disabled:dark:bg-gray-700 disabled:text-gray-400 disabled:dark:text-gray-500 disabled:cursor-not-allowed" disabled><i class="fas fa-paper-plane"></i></button>
+
+    </div>
+    
+    </div>
+    </div>
+
+    <!-- z-30 -->
+    <div id="modalContainer" class="hidden fixed top-0 left-0 w-svw h-svh bg-gray-900 bg-opacity-50 z-50 items-center justify-center" style="backdrop-filter: blur(4px);">
+
+        <div id="modalBox" class="hidden bg-white dark:bg-gray-850 sm:dark:border-gray-700 dark:sm:border sm:rounded-lg sm:shadow-md w-full h-full sm:h-fit sm:w-4/5 max-w-2xl overflow-hidden">
+            
+            <div id="sendingReport" class="loadingbar hidden"><div></div></div>
+
+            <div class="p-5">
+                <div class="flex flex-row justify-between">
+                    <h2 class="text-2xl font-bold select-none dark:text-gray-300">Zgłoś błąd</h2>
+                    <button id="closeModal" class="rounded-md dark:text-gray-300 hover:bg-gray-200 hover:dark:bg-gray-800 aspect-square p-2 transition duration-200" onclick="toggleModal()"><i class="fa-solid fa-x mx-1"></i></button>
+                </div>
+                <div class="mt-3">
+
+                    <div id="reportPrivacyNotice" class="flex text-gray-700 dark:text-gray-400 border border-gray-700 dark:bg-gray-800 rounded bg-gray-300 p-3 select-none mb-2">
+                        <i class="fa-solid fa-info-circle text-lg content-start mr-2"></i>
+                        <p class="text-normal text-sm text-start">Treść wszystkich wiadomości w tym czacie oraz konfiguracja modelu AI zostaną przesłane administratorowi strony razem z tym formularzem.</p>
+                    </div>
+
+                    <label class="text-xs font-normal text-gray-500 dark:text-gray-400 mt-4 mb-0.5 select-none">Co poszło nie tak?</label>
+
+                    <div id="reportReasons" class="mb-2 text-gray-500 dark:text-gray-400">
+                        <div class="flex flex-row items-center justify-start mb-0.5">
+                            <input type="radio" id="reportFalse" name="report" value="reportFalse" class="dark:bg-gray-800 h-4 w-4 border border-gray-400 dark:border-gray-700 rounded-full justify-center self-center content-center checked:bg-orange-500 checked:dark:bg-violet-700 ring-0 checked:ring-0 focus:ring-0"/>
+                            <label for="reportFalse" class="ml-2 text-sm font-normal">Odpowiedź AI była nieprawdziwa</label>
+                        </div>
+                        <div class="flex flex-row items-center justify-start mb-0.5">
+                            <input type="radio" id="reportUnclear" name="report" value="reportUnclear" class="dark:bg-gray-800 h-4 w-4 border border-gray-400 dark:border-gray-700 rounded-full justify-center self-center content-center checked:bg-orange-500 checked:dark:bg-violet-700 ring-0 checked:ring-0 focus:ring-0"/>
+                            <label for="reportUnclear" class="ml-2 text-sm font-normal">Odpowiedź AI była niejasna lub niekompletna</label>
+                        </div>
+                        <div class="flex flex-row items-center justify-start mb-0.5">
+                            <input type="radio" id="reportInappropriate" name="report" value="reportInappropriate" class="dark:bg-gray-800 h-4 w-4 border border-gray-400 dark:border-gray-700 rounded-full justify-center self-center content-center checked:bg-orange-500 checked:dark:bg-violet-700 ring-0 checked:ring-0 focus:ring-0"/>
+                            <label for="reportInappropriate" class="ml-2 text-sm font-normal">Odpowiedź AI była obraźliwa, bądź nieetyczna</label>
+                        </div>
+                        <div class="flex flex-row items-center justify-start mb-0.5">
+                            <input type="radio" id="reportIrrelevant" name="report" value="reportIrrelevant" class="dark:bg-gray-800 h-4 w-4 border border-gray-400 dark:border-gray-700 rounded-full justify-center self-center content-center checked:bg-orange-500 checked:dark:bg-violet-700 ring-0 checked:ring-0 focus:ring-0"/>
+                            <label for="reportIrrelevant" class="ml-2 text-sm font-normal">Odpowiedź AI nie dotyczyła zadawanego pytania</label>
+                        </div>
+
+                        <div class="flex flex-row items-center justify-start mb-0.5">
+                            <input type="radio" id="reportInteraction" name="report" value="reportInteraction" class="dark:bg-gray-800 h-4 w-4 border border-gray-400 dark:border-gray-700 rounded-full justify-center self-center content-center checked:bg-orange-500 checked:dark:bg-violet-700 ring-0 checked:ring-0 focus:ring-0"/>
+                            <label for="reportInteraction" class="ml-2 text-sm font-normal">Problemy z interakcją</label>
+                        </div>
+                        <div class="flex flex-row items-center justify-start">
+                            <input type="radio" id="reportOther" name="report" value="reportOther" class="dark:bg-gray-800 h-4 w-4 border border-gray-400 dark:border-gray-700 rounded-full justify-center self-center content-center checked:bg-orange-500 checked:dark:bg-violet-700 ring-0 checked:ring-0 focus:ring-0"/>
+                            <label for="reportOther" class="ml-2 text-sm font-normal">Inny powód</label>
+                        </div>
+
+                        <!-- Multiline text input -->
+                        <textarea id="reportOtherText" class="min-h-14 max-h-48 hidden w-full border dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-md p-2 mt-2 text-sm font-normal text-gray-900 dark:text-gray-400 focus:ring-0 ring-0 focus:border-2 focus:border-orange-500 focus:dark:border-violet-700 transition duration-200" placeholder="Opisz szczegółowo problem..."></textarea>
+                    </div>
+
+                    <!-- <input class="h-6 border border-gray-200 rounded-md"/> -->
+
+                    <!-- <p class="text-sm font-normal text-gray-500">Treść modala</p> -->
+                    <div class="flex flex-row">
+                        <div class="flex-grow"></div>
+                        <button id="sendReport" class="rounded-md bg-orange-500 hover:bg-orange-400 dark:bg-violet-700 hover:dark:bg-violet-600 text-white font-medium transition duration-200 disabled:bg-gray-200 disabled:dark:bg-gray-600 disabled:text-gray-400 py-2 px-3.5" onclick="sendReport()" disabled>Wyślij</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="errorDisplay" class="hidden bg-gray-200 dark:bg-gray-850 z-40 absolute bottom-0 sm:right-0 mx-auto m-4 mr-4 w-full sm:max-w-96 max-h-48 flex-row p-3 dark:border-gray-700 border-gray-300 border rounded-md shadow-md dark:shadow-gray-850">
+        <i class="fa-solid fa-triangle-exclamation text-xl text-center text-red-600 dark:text-red-700 content-start mr-2"></i>
+        <p id="errDisplayHtml" class="text-sm font-normal text-gray-900 dark:text-gray-300 text-start">Utracono połączenie z serwerem</p>
+    </div>
+
+    <!-- <script>
+        $(function() {
+            $(".typeMessage").tabcomplete([
+                "array",
+                "with",
+                "words",
+                "to",
+                "complete"
+            ]);
+        });
+    </script> -->
+
+    <script>
+        // Definiowanie zmiennych z najczęściej używanymi elementami
+        const chatMessages = $('#chatMessages');
+        const typeMessage = $('#typeMessage');
+        const sendMessageButton = $('#sendMessage');
+        const bookSelect = $('#bookSelect');
+        const bookSelectContainer = $('#bookSelectContainer');
+        const bookSelectOpen = $('#bookSelectOpen');
+        const loadingBar = $('#loadingBar');
+        const requestTimer = $('#requestTimer');
+        const errorDiv = $('#error');
+        const timeDiv = $('#requestTimer');
+        const errorContent = $('#errorContent');
+        const bsType = $('#bs-type');
+        const bsNothingFound = $('#bs-nothingfound');
+        const bsResults = $('#bs-results');
+        const bsLoading = $('#bs-loading');
+        const bsoTop = $('#bso-top');
+        const bsoBottom = $('#bso-bottom');
+        const errorDisplay = $('#errorDisplay');
+        const startScreen = $('#startScreen');
+        const sidebar = $('#sidebar');
+    </script>
+
+    <script src="/flowbite/flowbite.min.js"></script>
+    <script src="https://kit.fontawesome.com/eef8afdd03.js" crossorigin="anonymous"></script>
+    <script src="./js/chat.js"></script>
+    <script src="./js/tabcomplete.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="./css/global.css"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js" integrity="sha512-/9uQgrROuVyGVQMh4f61rF2MTLjDVN+tFGn20kq66J+kTZu/q83X8oJ6i4I9MCl3psbB5ByQfIwtZcHDHc2ngQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/showdown/dist/showdown.min.js"></script>
+
+    <script>
+        // window.addEventListener("load", function(){
+        //     if(window.canStartChat === true) {
+        //         networkError.addClass('hidden');
+        //         requestTimer.addClass('hidden');
+        //         bsNothingFound.addClass('hidden');
+        //         bsResults.addClass('hidden');
+        //         bsLoading.addClass('hidden');
+        //         errorDiv.addClass('hidden');
+        //         startScreen.addClass('h-svh');
+    
+        //         socket.emit('startup', 'chat');
+    
+        //         // Dodajemy opóźnienie, aby animacja była widoczna
+        //         setTimeout(function() {
+    
+        //             $('#preloader').addClass('fadeOut');
+    
+        //             setTimeout(function() {
+        //                 $('#preloader').addClass('hidden');
+        //             }, 150);
+    
+        //         }, 500);
+
+        //     }
+
+        // });
+
+        // Temporaily
+        $('#chatAlreadyStarted').css('display', 'none');
+
+
+        function checkCanStartChat() {
+        if (window.canStartChat === true) {
+            // Dodajemy opóźnienie, aby animacja była widoczna
+            setTimeout(function() {
+                $('#preloader').addClass('fadeOut');
+
+                setTimeout(function() {
+                    $('#preloader').addClass('hidden');
+                }, 150); // Opóźnienie 150ms
+
+            }, 500); // Opóźnienie 500ms
+
+            return true; // Zatrzymujemy sprawdzanie
+        }
+        return false; // Kontynuujemy sprawdzanie
+    }
+
+    window.addEventListener("load", function() {
+        socket.emit('startup', 'chat');
+        errorDisplay.addClass('hidden');
+        requestTimer.addClass('hidden');
+        bsNothingFound.addClass('hidden');
+        bsResults.addClass('hidden');
+        bsLoading.addClass('hidden');
+        errorDiv.addClass('hidden');
+        startScreen.addClass('h-svh');
+
+        if (!checkCanStartChat()) {
+            // Sprawdzaj co 500ms, czy można uruchomić czat
+            var intervalId = setInterval(function() {
+                if (checkCanStartChat()) {
+                    clearInterval(intervalId); // Zatrzymaj sprawdzanie, gdy warunek jest spełniony
+                }
+            }, 500);
+        }
+    });
+
+    </script>
+
+<!-- <script>
+    (function() {
+        var originalConsoleLog = console.log;
+    
+        // Funkcja wyświetlająca ostrzeżenie
+        function displayWarning() {
+            originalConsoleLog.call(console, "%cOstrzeżenie!", "color: red; font-size: 20px;");
+            originalConsoleLog.call(console, "%cUżywanie konsoli deweloperskiej może narazić Cię na ataki i naruszyć bezpieczeństwo Twoich danych.", "color: black; font-size: 16px;");
+        }
+    
+        // Nadpisz console.log, aby zawsze wyświetlać ostrzeżenie
+        console.log = function() {
+            displayWarning();
+            originalConsoleLog.apply(console, arguments);
+        };
+    
+        // Regularnie wyświetlaj ostrzeżenie
+        setInterval(displayWarning, 500);
+    })();
+
+    </script>
+
+<script>
+
+    /*!
+devtools-detect
+https://github.com/sindresorhus/devtools-detect
+By Sindre Sorhus
+MIT License
+*/
+const devtools = {
+    isOpen: false,
+    orientation: undefined,
+};
+const threshold = 170;
+const emitEvent = (isOpen,orientation)=>{
+    globalThis.dispatchEvent(new globalThis.CustomEvent('devtoolschange',{
+        detail: {
+            isOpen,
+            orientation,
+        },
+    }));
+}
+;
+const main = ({emitEvents=true}={})=>{
+    const widthThreshold = globalThis.outerWidth - globalThis.innerWidth > threshold;
+    const heightThreshold = globalThis.outerHeight - globalThis.innerHeight > threshold;
+    const orientation = widthThreshold ? 'vertical' : 'horizontal';
+    if (!(heightThreshold && widthThreshold) && ((globalThis.Firebug && globalThis.Firebug.chrome && globalThis.Firebug.chrome.isInitialized) || widthThreshold || heightThreshold)) {
+        if ((!devtools.isOpen || devtools.orientation !== orientation) && emitEvents) {
+            emitEvent(true, orientation);
+        }
+        devtools.isOpen = true;
+        devtools.orientation = orientation;
+    } else {
+        if (devtools.isOpen && emitEvents) {
+            emitEvent(false, undefined);
+        }
+        devtools.isOpen = false;
+        devtools.orientation = undefined;
+    }
+}
+;
+main({
+    emitEvents: false
+});
+setInterval(main, 500);
+
+const stateElement = document.querySelector('#devtools-state');
+const orientationElement = document.querySelector('#devtools-orientation');
+
+chatMessages.css('display', devtools.isOpen ? 'block' : 'none');
+
+window.addEventListener('devtoolschange', event => {
+    chatMessages.css('display', devtools.isOpen ? 'block' : 'none');
+});
+
+</script> -->
+
+<!-- 100% privacy-first analytics -->
+<script data-collect-dnt="true" async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+<noscript>Włącz obsługę JavaScript</noscript>
+    
+</body>
+</html>

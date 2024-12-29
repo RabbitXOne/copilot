@@ -1,0 +1,40 @@
+{
+  "name": "szkolny-copilot",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon --ignore public/ index.js",
+    "build": "npx tailwindcss -i ./src/input.css -o ./public/css/output.css",
+    "builddev": "npx tailwindcss -i ./src/input.css -o ./public/css/output.css --watch"
+  },
+  "author": "Filip Polak",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/storage": "^7.13.0",
+    "@google-cloud/vertexai": "^1.1.0",
+    "@google/generative-ai": "^0.21.0",
+    "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "express-socket.io-session": "^1.3.5",
+    "flowbite": "^2.3.0",
+    "http": "^0.0.1-security",
+    "jquery": "^3.7.1",
+    "jsonrepair": "^3.9.0",
+    "minisearch": "^6.3.0",
+    "mongodb": "^6.6.2",
+    "node-cron": "^3.0.3",
+    "nodemon": "^3.1.0",
+    "pptxgenjs": "^3.12.0",
+    "readline": "^1.3.0",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}

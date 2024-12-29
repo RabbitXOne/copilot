@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "oe0928pd28");
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rozwiązania zadań</title>
+
+    <link rel="stylesheet" href="./css/output.css" type="text/css">
+    <script src="/jquery/jquery.js"></script>
+
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Co-pilot" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <style>
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .loadingbar {
+            height: 4px;
+            margin-bottom: -4px;
+            overflow: hidden;
+            position: relative; /* Added */
+        }
+        
+        .loadingbar div:before {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #ef7000;
+            animation: box-1 2100ms cubic-bezier(0.65, 0.81, 0.73, 0.4) infinite;
+        }
+        
+        .loadingbar div:after {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #ef7000;
+            animation: box-2 2100ms cubic-bezier(0.16, 0.84, 0.44, 1) infinite;
+            animation-delay: 1150ms;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .loadingbar div:before {
+                background: #6d28d9;
+            }
+            .loadingbar div:after {
+                background: #6d28d9;
+            }
+        }
+        
+        @keyframes box-1 {
+            0% {
+                left: -35%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 100%;
+                right: -90%;
+            }
+        }
+        
+        @keyframes box-2 {
+            0% {
+                left: -200%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 107%;
+                right: -8%;
+            }
+        }
+        
+        .loadingSpinner {
+            animation: rotate 2s linear infinite;
+        }
+        
+        .loadingSpinner .spinnerPath {
+          stroke-linecap: round;
+          animation: dash 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes rotate {
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        
+        @keyframes dash {
+          0% {
+            stroke-dasharray: 1, 150;
+            stroke-dashoffset: 0;
+          }
+          50% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -35;
+          }
+          100% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -124;
+          }
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.15s ease-in-out;
+        }
+
+        .fadeOut {
+            animation: fadeOut 0.15s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+    </style>
+
+</head>
+<body class="dark:bg-gray-900">
+    
+    <div id="preloader" class="hidden"></div>
+    
+    <script src="/socketio/socket.io.js"></script>
+    
+    <script>
+        const socket = io();
+    </script>
+
+    <div class="flex flex-col h-svh min-h-fit">
+
+    <div onclick="window.location.href = '/'" class="flex text-gray-200 dark:text-gray-700 text-base m-6 mb-0 cursor-pointer hover:text-gray-300 dark:hover:text-gray-600 transition duration-150 w-fit">
+        <i class="fa-solid fa-arrow-left mr-2 mb-1 mt-1"></i>
+            <p class="font-bold mb-1">Powrót</p>
+    </div>
+
+    <div class="flex flex-row items-center justify-center mt-12 flex-wrap mx-3 dark:text-gray-200">
+        <i class="fa-solid fa-book-open content-start text-4xl mr-5 mb-1"></i>
+        <p class="text-4xl font-bold mb-1">Rozwiązania zadań</p>
+    </div>
+
+    <div id="elements" class="flex mt-6 justify-center flex-col sm:flex-row flex-wrap">
+        <div role="status" class="flex flex-row sm:flex-col sm:w-64 sm:aspect-square bg-gray-50 dark:bg-gray-850 rounded-md m-4 mb-2 sm:p-4 p-4 transition duration-200 shadow-md border border-gray-200 dark:border-gray-700 sm:items-center sm:justify-center animate-pulse">
+            <div class="size-16 sm:size-24 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse mb-4 self-center mr-4 sm:mr-0"></div>
+            <div class="h-4 w-32 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse self-center"></div>
+        </div>
+        <div role="status" class="flex flex-row sm:flex-col sm:w-64 sm:aspect-square bg-gray-50 dark:bg-gray-850 rounded-md m-4 mb-2 sm:p-4 p-4 transition duration-200 shadow-md border border-gray-200 dark:border-gray-700 sm:items-center sm:justify-center animate-pulse">
+            <div class="size-16 sm:size-24 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse mb-4 self-center mr-4 sm:mr-0"></div>
+            <div class="h-4 w-32 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse self-center"></div>
+        </div>
+        <div role="status" class="flex flex-row sm:flex-col sm:w-64 sm:aspect-square bg-gray-50 dark:bg-gray-850 rounded-md m-4 mb-2 sm:p-4 p-4 transition duration-200 shadow-md border border-gray-200 dark:border-gray-700 sm:items-center sm:justify-center animate-pulse">
+            <div class="size-16 sm:size-24 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse mb-4 self-center mr-4 sm:mr-0"></div>
+            <div class="h-4 w-32 bg-gray-200 dark:bg-gray-800 rounded-xl animate-pulse self-center"></div>
+        </div>
+    </div>
+
+    <script>
+        function btnShowSelect(element) {
+            $(element).removeClass('hidden');
+            $(element).addClass('flex');
+            $(element).addClass('fadeIn');
+
+            setTimeout(function() {
+                $(element).removeClass('fadeIn');
+            }, 140);
+
+            $(element).on('mouseleave', function() {
+                btnHideSelect(element);
+            });
+        }
+
+        function btnHideSelect(element) {
+            $(element).addClass('fadeOut');
+
+            setTimeout(function() {
+                $(element).removeClass('flex');
+                $(element).addClass('hidden');
+                $(element).removeClass('fadeOut');
+            }, 140);
+        }
+    </script>
+    
+    <div style="flex: 1; flex-grow: 3;"></div>
+
+    <div class="flex m-4 bg-white mt-auto dark:bg-gray-900">
+
+            <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-300 dark:bg-gray-700 rounded-full">
+                <span id="inicjaly" class="font-medium text-gray-600 dark:text-gray-300"></span>
+            </div>
+
+            <div class="flex flex-col ms-3 flex-grow">
+                <p class="text-xs font-normal text-gray-500 dark:text-gray-500 whitespace-nowrap overflow-hidden overflow-ellipsis">Zalogowano jako:</p>
+                <p id="imienazwisko" class="text-sm font-medium text-gray-900 dark:text-gray-400 whitespace-nowrap overflow-hidden overflow-ellipsis">Nieznany użytkownik</p>
+            </div>
+
+            <a href="/logout"><button data-tooltip-target="tooltip-logout"><i class="ml-2 fa-solid fa-right-from-bracket rounded-md bg-white dark:bg-gray-900 hover:bg-gray-200 hover:dark:bg-gray-850 p-2 text-gray-700 dark:text-gray-400 transition duration-200"></i></button></a>
+            <div id="tooltip-logout" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white dark:text-gray-300 transition-opacity delay-500 duration-300 bg-gray-900 rounded-md shadow-sm opacity-0 tooltip dark:bg-gray-700">Wyloguj się<div class="tooltip-arrow" data-popper-arrow></div></div>
+    </div>
+    
+    <script>
+        $('#bannedScreen').addClass('hidden');
+
+        $(document).ready(function() {
+            let maxWysokosc = 0;
+            let maxSzerokosc = 0;
+        
+            // Znajdź wszystkie elementy w kontenerze #elements
+            $('#elements > div').each(function() {
+                const wysokosc = $(this).outerHeight();
+                const szerokosc = $(this).outerWidth();
+                if (wysokosc > maxWysokosc) maxWysokosc = wysokosc;
+                if (szerokosc > maxSzerokosc) maxSzerokosc = szerokosc;
+            });
+        
+            // Ustaw wysokość i szerokość dla wszystkich elementów
+            $('#elements > div').css({
+                'height': maxWysokosc + 'px',
+                'width': maxSzerokosc + 'px'
+            });
+        });
+
+        socket.emit('startup', 'rozwiazania_zadan');
+
+        let startupTry = 0;
+        socket.on('startup', function(response, additionalData1, userInfo) {
+            if(response === 'auth-redirection') {
+                window.location.href = '/logout';
+            } else if(response === 'db-err') {
+                
+                // Retry
+                if(startupTry < 3) {
+                    startupTry++;
+                    socket.emit('startup', 'rozwiazania_zadan');
+                } else {
+                    // Nie udało się połączyć z bazą danych
+                    // Odśwież stronę
+                    window.location.reload();
+                }
+            } else if(response === 'banned') {
+                // Zbanowany
+                window.location.href = '/';
+
+            } else if(response === 'success' && additionalData1 && userInfo) {
+
+                if(additionalData1.length < 1) {
+                    window.location.href = '/';
+                    return;
+                }
+
+                $('#imienazwisko').text(userInfo.imie + ' ' + userInfo.nazwisko);
+                $('#inicjaly').text(userInfo.inicjaly);
+
+                $('#elements').html(additionalData1);
+
+            } else {
+                // console.log('Startup failed - unknown error');
+                window.location.href = '/';
+            }
+
+        });
+
+    </script>
+
+
+
+
+    <script src="/flowbite/flowbite.min.js"></script>
+    <script src="https://kit.fontawesome.com/eef8afdd03.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="./css/global.css"></script>
+
+    <script>
+        $(window).on("load", function(){
+            setTimeout(function() {
+                $('#preloader').addClass('fadeOut');
+
+                setTimeout(function() {
+                    $('#preloader').addClass('hidden');
+                }, 150); // Opóźnienie 500ms
+
+            }, 500); // Opóźnienie 500ms
+        });
+    </script>
+
+<!-- 100% privacy-first analytics -->
+<script data-collect-dnt="true" async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+<noscript>Włącz obsługę JavaScript</noscript>
+
+</body>
+</html>

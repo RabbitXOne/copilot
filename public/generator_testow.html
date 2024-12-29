@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "oe0928pd28");
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator testów</title>
+
+    <link rel="stylesheet" href="./css/output.css" type="text/css">
+    <script src="/jquery/jquery.js"></script>
+
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Co-pilot" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <style>
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .loadingbar {
+            height: 4px;
+            margin-bottom: -4px;
+            overflow: hidden;
+            position: relative; /* Added */
+        }
+        
+        .loadingbar div:before {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #fff;
+            animation: box-1 2100ms cubic-bezier(0.65, 0.81, 0.73, 0.4) infinite;
+        }
+        
+        .loadingbar div:after {
+            content: "";
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            background: #fff;
+            animation: box-2 2100ms cubic-bezier(0.16, 0.84, 0.44, 1) infinite;
+            animation-delay: 1150ms;
+        }
+        
+        @keyframes box-1 {
+            0% {
+                left: -35%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 100%;
+                right: -90%;
+            }
+        }
+        
+        @keyframes box-2 {
+            0% {
+                left: -200%;
+                right: 100%;
+            }
+        
+            60%, 100% {
+                left: 107%;
+                right: -8%;
+            }
+        }
+        
+        .loadingSpinner {
+            animation: rotate 2s linear infinite;
+        }
+        
+        .loadingSpinner .spinnerPath {
+          stroke-linecap: round;
+          animation: dash 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes rotate {
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        
+        @keyframes dash {
+          0% {
+            stroke-dasharray: 1, 150;
+            stroke-dashoffset: 0;
+          }
+          50% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -35;
+          }
+          100% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -124;
+          }
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.15s ease-in-out;
+        }
+
+        .fadeOut {
+            animation: fadeOut 0.15s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        #progress {
+            -webkit-transition: width 0.2s ease-in-out;
+            -moz-transition: width 0.2s ease-in-out;
+            -o-transition: width 0.2s ease-in-out;
+            transition: width 0.2s ease-in-out;
+  
+        }
+
+        .progress-ring__circle {
+            transition: 0.5s stroke-dashoffset, 0.5s stroke;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .progress-ring__text {
+            transition: 0.5s fill;
+            font-size: 24px;
+            fill: white;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .progress-ring__background {
+            stroke: #374151; /* Light gray color for the background circle */
+        }
+        
+    </style>
+
+</head>
+<body class="bg-gray-900">
+    
+    <div id="preloader" class="hidden"></div>
+    
+    <script src="/socketio/socket.io.js"></script>
+    <script>
+        const socket = io();
+    </script>
+
+    <main>
+        
+    <!-- <div class="hidden sm:block text-white">
+        WEJDŹ Z TELEFONU
+    </div> -->
+    <div id="move-to-mobile" class="hidden sm:flex flex-col h-svh text-center justify-center items-center p-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="#e3a008" class="size-12"><path d="M16 64C16 28.7 44.7 0 80 0L304 0c35.3 0 64 28.7 64 64l0 384c0 35.3-28.7 64-64 64L80 512c-35.3 0-64-28.7-64-64L16 64zM144 448c0 8.8 7.2 16 16 16l64 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16zM304 64L80 64l0 320 224 0 0-320z"/></svg>
+
+        <h2 class="text-center font-semibold mt-3 text-2xl text-gray-200">Przełącz się na telefon</h2>
+        <p id="failed-moreinfo" class="max-w-96 mt-2 text-gray-400">Generator testów aktualnie jest wyłącznie zoptymalizowany do działania na urządzeniach mobilnych. Otwórz generator testów z telefonu, aby kontynuować.</p>
+        
+    </div>
+
+    <div id="screen-main" class="sm:hidden flex flex-col h-svh min-h-fit">
+
+        <div id="previousTestNotFinished" class="hidden">
+            <div id="previousTestNotFinishedBox" class="bg-gray-850 border border-gray-700 rounded-md p-3 m-4">
+                <h2 class="text-lg font-semibold text-gray-50">Masz nieukończony test!</h2>
+                <p class="text-gray-50">Niedawno utworzyłeś test, ale nie rozwiązałeś go do końca</p>
+                <button id="loadPreviousTestBtn" class="rounded-md p-2 bg-yellow-300 mt-2.5 hover:bg-yellow-400 disabled:bg-gray-700 disabled:text-gray-400 transition duration-150 select-none" onclick="wczytajPoprzedniTest()" disabled>Kontynuuj</button>
+            </div>
+
+            <div class="flex items-center justify-center my-2">
+                <div class="flex-grow border-t border-gray-700"></div>
+                <span class="mx-4 text-gray-300" style="font-variant: all-small-caps">LUB UTWÓRZ NOWY TEST</span>
+                <div class="flex-grow border-t border-gray-700"></div>
+            </div>
+        </div>
+
+        <div id="creatingNewTest" class="flex items-center justify-center my-2">
+            <div class="flex-grow border-t border-gray-700"></div>
+            <span class="mx-4 text-gray-300" style="font-variant: all-small-caps">TWORZYSZ NOWY TEST</span>
+            <div class="flex-grow border-t border-gray-700"></div>
+        </div>
+
+        <div id="createNewTestDiv" class="p-3">
+            <div id="createStep1" class="mb-4">
+                <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mb-0.5 select-none">1. Wybierz przedmiot</label>
+
+                <button id="wybierzPrzedmiot" data-dropdown-toggle="dropdownPrzedmiot" class="flex-grow rounded-md select-none text-gray-500 border dark:text-gray-400 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-850 hover:bg-gray-100 hover:dark:bg-gray-800 focus:border-2 focus:outline-none focus:border-orange-500 focus:dark:border-violet-700 font-normal text-sm px-5 py-2.5 text-center items-center disabled:cursor-not-allowed transition duration-150 w-full" type="button">Wybierz przedmiot<i class="fa-solid fa-chevron-down ms-2"></i></button>
+
+
+                <div id="dropdownPrzedmiot" class="z-10 hidden bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-600 shadow w-[92%] rounded-md">
+                    <ul id="przedmiotList" class="py-2 text-sm text-gray-700 dark:text-gray-300" aria-labelledby="wybierzPrzedmiot">
+                    
+                    <div class="flex flex-col items-center justify-center min-h-fit max-h-24 overflow-auto p-4">
+                        <svg class="loadingSpinner z-20 text-center size-12" viewBox="0 0 50 50">
+                            <circle class="spinnerPath stroke-gray-400 dark:stroke-gray-300" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                        </svg>
+                    </div>
+                    </ul>
+                </div>
+
+
+            </div>
+            <div id="createStep2" class="mb-4 hidden">
+                <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mb-0.5 select-none">2. Wybierz dział</label>
+
+                <button id="wybierzDzial" data-dropdown-toggle="dropdownDzial" class="flex-grow rounded-md select-none text-gray-500 border dark:text-gray-400 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-850 hover:bg-gray-100 hover:dark:bg-gray-800 focus:border-2 focus:outline-none focus:border-orange-500 focus:dark:border-violet-700 font-normal text-sm px-5 py-2.5 text-center items-center disabled:cursor-not-allowed transition duration-150 w-full" type="button">Wyszukaj dział z podręcznika<i class="fa-solid fa-chevron-down ms-2"></i></button>
+
+
+                <div id="dropdownDzial" class="z-10 hidden bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-600 shadow w-[92%] rounded-md">
+                    <ul id="dzialList" class="py-2 text-sm text-gray-700 dark:text-gray-300" aria-labelledby="wybierzDzial">
+                    
+                    <div class="flex flex-col items-center justify-center min-h-fit max-h-24 overflow-auto p-4">
+                        <svg class="loadingSpinner z-20 text-center size-12" viewBox="0 0 50 50">
+                            <circle class="spinnerPath stroke-gray-400 dark:stroke-gray-300" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                        </svg>
+                    </div>
+                    </ul>
+                </div>
+
+
+            </div>
+            <div id="createStep3" class="hidden">
+                <label class="block text-xs font-normal text-gray-500 dark:text-gray-400 mb-0.5 select-none">3. Wybierz model AI (opcjonalnie)</label>
+
+                <button id="wybierzModel" data-dropdown-toggle="dropdownModel" class="max-h-fit flex-grow rounded-md select-none text-gray-500 border dark:text-gray-400 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-850 hover:bg-gray-100 hover:dark:bg-gray-800 focus:border-2 focus:outline-none focus:border-orange-500 focus:dark:border-violet-700 font-normal text-sm px-5 py-2.5 text-center items-center disabled:cursor-not-allowed transition duration-150 w-full" type="button">Wybierz model AI<i class="fa-solid fa-chevron-down ms-2"></i></button>
+
+                <div id="dropdownModel" class="z-10 hidden bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-600 shadow w-[92%] rounded-md">
+                    <ul id="modelList" class="py-2 text-sm text-gray-700 dark:text-gray-300" aria-labelledby="wybierzModel">
+                    
+                    <div class="flex flex-col items-center justify-center min-h-fit max-h-24 overflow-auto p-4">
+                        <svg class="loadingSpinner z-20 text-center size-12" viewBox="0 0 50 50">
+                            <circle class="spinnerPath stroke-gray-400 dark:stroke-gray-300" cx="25" cy="25" r="20" fill="none" stroke-width="2"></circle>
+                        </svg>
+                    </div>
+                    </ul>
+                </div>
+
+                <p class="text-center text-gray-700 text-sm mt-3">Przewidywany koszt wygenerowania testu przy obecnych ustawieniach wynosi <span id="predictedPrice">---</span> zł</p>
+
+                <p class="text-center text-gray-700 text-sm mt-3">Test będzie zawierał ok. 20 pytań jednokrotnego wyboru</p>
+                
+                
+            </div>
+        </div>
+        
+        <div style="flex: 1; flex-grow: 3;"></div>
+
+        <div id="startGeneratingTest" class="mt-auto flex-col p-3 hidden"> <!-- Flex -->
+            <button id="startGeneratingTestBtn" class="rounded-md p-2 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-700 disabled:text-gray-400 transition duration-150 select-none" onclick="generateTest()" disabled>Wygeneruj test <i class="fa-solid fa-arrow-right ms-3"></i></button>
+            <p class="text-center text-gray-700 text-xs mt-2 select-none">LLM mogą popełniać błędy</p>
+
+        </div>
+    </div>
+
+    <div id="screen-failed" class="hidden flex-col h-svh text-center justify-center items-center p-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#dc2626" class="size-12"><path d="M140.6 21.2C154.1 7.7 172.4 .1 191.5 .1l129 0c19.1 0 37.4 7.6 50.9 21.1L490.8 140.6c13.5 13.5 21.1 31.8 21.1 50.9l0 129c0 19.1-7.6 37.4-21.1 50.9L371.4 490.8c-13.5 13.5-31.8 21.1-50.9 21.1l-129 0c-19.1 0-37.4-7.6-50.9-21.1L21.2 371.4C7.7 357.9 .1 339.6 .1 320.5l0-129c0-19.1 7.6-37.4 21.1-50.9L140.6 21.2zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/></svg>
+
+        <h2 class="text-center font-semibold mt-3 text-2xl text-gray-200">Nie udało się wczytać testu :(</h2>
+        <p id="failed-moreinfo" class="max-w-96 mt-2 text-gray-400">Nie udało się wygenerować testu. Spróbuj ponownie, a jeśli problem nadal występuje skontaktuj się z administratorem serwisu.</p>
+        
+    </div>
+    <div id="screen-loading" class="hidden flex-col h-svh">
+
+        <div class="h-1 p-0 m-0 bg-gray-700 overflow-hidden loadingbar"><div></div></div>
+
+        <div class="text-center mt-[15%]">
+            <h2 class="text-gray-50 font-medium text-lg">Twój test jest przygotowywany!</h2>
+            <p class="text-gray-400">Może to chwilę potrwać</p>
+        </div>
+        
+        <div id="progressAnimation" class="text-center mt-[10%]">
+            <style>
+                .text-slider {
+                    height: 40px; /* Dopasuj wysokość do wysokości jednej linijki tekstu */
+                    overflow: hidden;
+                    position: relative;
+                }
+                .text-slider ul {
+                    position: absolute;
+                    width: 100%;
+                    transition: transform 0.2s ease-in-out;
+                }
+                .text-slider li {
+                    list-style: none;
+                    padding: 10px; /* Padding wokół tekstu */
+                    text-align: center;
+                }
+            </style>
+            <div class="text-slider bg-gray-900 text-gray-300">
+                <ul id="text-list">
+                    <li>Twój test jest przygotowywany...</li>
+                    <li>Może to chwilę potrwać...</li>
+                    <li>Czytam podręcznik...</li>
+                    <li>Sprawdzam źródła...</li>
+                    <li>Wymyślam pytania...</li>
+                    <li>Czytam temat z podręcznika...</li>
+                    <li>Piszę kolejne pytania...</li>
+                    <li>Sprawdzam źródła...</li>
+                    <li>Przygotowuję test do wypełnienia...</li>
+                    <li>Przygotowuję uzasadnienia błędnych odpowiedzi...</li>
+                    <li>Prawie gotowe!</li>
+                </ul>
+            </div>
+            
+            <script>
+                $(document).ready(function() {
+                    const $textList = $('#text-list');
+                    const itemHeight = $textList.find('li').outerHeight(); // Wysokość jednego elementu listy
+                    const interval = 6000; // Czas wyświetlania jednej linijki (w ms)
+        
+                    function scrollText() {
+                        $textList.animate({
+                            'marginTop': `-${itemHeight}px`
+                        }, 400, function() {
+                            // Przenieś pierwszy element na koniec listy
+                            $textList.find('li:first').appendTo($textList);
+                            $textList.css('marginTop', 0); // Resetuj margines do zera
+                        });
+                    }
+        
+                    setInterval(scrollText, interval);
+                });
+            </script>
+        </div>
+
+        <div style="flex: 1; flex-grow: 3;"></div>
+
+        <div id="startGeneratingTest" class="flex mt-auto flex-col p-3">
+            <p class="text-center text-gray-400 text-sm mt-2 select-none">Nie zamykaj tego okna przeglądarki</p>
+        </div>
+    </div>
+
+    <div id="screen-finish" class="hidden flex-col h-svh">
+        <h2 class="mt-4 text-2xl font-semibold text-center text-gray-50">Test zakończony!</h2>
+        <svg class="progress-ring self-center mt-4" width="120px" height="120px" viewBox="0 0 120 120">
+            <circle class="progress-ring__background" stroke-width="10" fill="transparent" r="52" cx="60" cy="60"/>
+            <circle id="progress-ring-circle" class="progress-ring__circle" stroke="white" stroke-width="10" fill="transparent" r="52" cx="60" cy="60" stroke-linecap="round"/>
+            <text x="60" y="60" class="progress-ring__text" id="progress-text">0%</text>
+        </svg>
+
+        <div id="answersOverview" class="flex flex-col mx-3 text-gray-200">
+            <div id="qListDiv" class="flex flex-col w-full p-4 pt-0">
+                
+                <script>
+                    function toggleMoreInfo(buttonId) {
+                        const moreInfoDiv = $('#aoMoreInfo' + buttonId);
+                        const svgIcon = $('#toggleAo' + buttonId + ' svg');
+                        if (moreInfoDiv.hasClass('hidden')) {
+                            moreInfoDiv.removeClass('hidden');
+                            moreInfoDiv.addClass('max-h-96'); // Adjust max height as needed
+                            svgIcon.css('transform', 'rotate(180deg)');
+                        } else {
+                            moreInfoDiv.addClass('hidden');
+                            moreInfoDiv.removeClass('max-h-96');
+                            svgIcon.css('transform', 'rotate(0deg)');
+                        }
+                    }
+                </script>
+                
+            </div>
+        </div>
+
+
+    </div>
+
+    <div id="screen-test" class="hidden flex-col h-svh">
+
+        <div class="h-1 p-0 m-0 bg-gray-700 overflow-hidden"><div id="progress" class="bg-gray-50 h-full transition duration-200"></div></div>
+
+
+        <div class="flex-1 p-3" style="flex-grow: 3;">
+            <p id="testName" class=" text-gray-700 uppercase text-xs p-1 font-medium select-none" style="letter-spacing: 1.25px;">TEST: HISTORIA - DZIAŁ VI</p>
+            <div class="flex flex-row ml-1">
+                <h3 id="questionNumber" class="text-white font-bold select-none text-lg">7.</h3>
+                <h3 id="questionTitle" class="ml-2 text-white font-bold select-none text-lg">Pytanie siódme</h3>
+            </div>
+
+            <div id="answersDiv" class="m-1.5 mt-5 flex flex-col">
+                <button class="answerBtn flex min-w-32 min-h-10 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 hover:bg-gray-850 bg-gray-900 transition duration-150 h-fit w-fit max-w-72">
+                    <div class="flex items-center justify-center w-10 aspect-square rounded-l-lg text-white text-xl font-bold">A</div>
+                    <div class="flex-1 text-start content-center rounded-r-lg text-white border-l-2 px-2.5 border-gray-700 text-wrap h-10">
+                        <p>Pierwsza odpowiedź</p>
+                    </div>
+                </button>
+                <button class="answerBtn flex min-w-32 min-h-10 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 hover:bg-gray-850 bg-gray-900 transition duration-150 h-fit w-fit max-w-72">
+                    <div class="flex items-center justify-center w-10 aspect-square rounded-l-lg text-white text-xl font-bold">B</div>
+                    <div class="flex-1 text-start content-center rounded-r-lg text-white border-l-2 px-2.5 border-gray-700 text-wrap h-10">
+                        <p>Druga odpowiedź</p>
+                    </div>
+                </button>
+                <button class="answerBtn flex min-w-32 min-h-10 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 hover:bg-gray-850 bg-gray-900 transition duration-150 h-fit w-fit max-w-72">
+                    <div class="flex items-center justify-center w-10 aspect-square rounded-l-lg text-white text-xl font-bold">C</div>
+                    <div class="flex-1 text-start content-center rounded-r-lg text-white border-l-2 px-2.5 border-gray-700 text-wrap h-10">
+                        <p>Trzecia odpowiedź</p>
+                    </div>
+                </button>
+            </div>
+
+            <div id="answerRes" class="flex flex-col w-fit h-fit m-1.5 p-4 items-start content-start gap-2 flex-wrap rounded-lg" style="background: #450000;">
+                <div class="flex text-xs font-bold uppercase leading-normal" style="color: #d30000; letter-spacing: 3px;">
+                    <span id="answerResIcon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x leading-normal"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </span>
+
+                    <p id="answerResTitle" class="ml-1.5" style="margin-top: 3.5px">BŁĘDNA ODPOWIEDŹ</p>
+                </div>
+                <p class="text-white text-sm font-normal text-wrap max-w-fit">Lorem ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki</p>
+            </div>
+
+        </div>
+
+        <!-- Do poprawy! -->
+        <div class="flex p-3 mb-3 content-end">
+            <button id="checkCorrectAnswer" class="aspect-square border-2 border-gray-700 rounded-lg text-gray-300 text-base select-none p-3 transition duration-150 bg-gray-900 hover:bg-gray-850" onclick="showCorrectAnswer()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye">
+                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+
+            <button id="testActionBtn" class="border-2 flex border-gray-700 rounded-lg text-gray-300 text-base select-none p-3 ml-3 transition duration-150 bg-gray-900 hover:bg-gray-850" onclick="testActionBtn()">
+                <p class="mr-2">Następne pytanie</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- <div class="flex justify-center items-center flex-col sm:hidden">
+        
+        <div class="flex flex-col gap-4 p-6">
+            
+            <div id="correctAnswer" class="flex w-fit h-fit p-6 items-start content-start gap-4 flex-wrap rounded-lg" style="background: #004518;">
+                <div class="flex text-xs font-bold uppercase leading-normal" style="color: #00d348; letter-spacing: 3px; ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check leading-normal"><path d="M20 6 9 17l-5-5"/></svg>
+                    <p class="ml-1.5" style="margin-top: 3.5px">POPRAWNA ODPOWIEDŹ</p>
+                    </div>
+                    <p class="flex-shrink-0 text-white text-sm font-normal text-wrap max-w-fit">Lorem ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki</p>
+                </div>
+
+                <div id="wrongAnswer" class="flex w-fit h-fit p-6 items-start content-start gap-4 flex-wrap rounded-lg" style="background: #450000;">
+                    <div class="flex text-xs font-bold uppercase leading-normal" style="color: #d30000; letter-spacing: 3px; ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x leading-normal"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                         <p class="ml-1.5" style="margin-top: 3.5px">BŁĘDNA ODPOWIEDŹ</p>
+                    </div>
+                    <p class="flex-shrink-0 text-white text-sm font-normal text-wrap max-w-fit">Lorem ipsum jest tekstem stosowanym jako przykładowy wypełniacz w przemyśle poligraficznym. Został po raz pierwszy użyty w XV w. przez nieznanego drukarza do wypełnienia tekstem próbnej książki</p>
+                </div>
+
+                </div>
+
+                <br><br> <hr class="border-t border-gray-700 w-full"> <br><br>
+
+                <p class="text-gray-700 uppercase text-sm p-1 font-medium select-none" style="letter-spacing: 1.5px;">WSZYSTKIE ELEMENTY POWINNY MIEĆ TAKĄ SAMĄ DŁUGOŚĆ (MOGĄ MIEĆ RÓŻNĄ WYSOKOŚĆ)</p>
+
+                Poniżej:
+                 - tytuł pytania, pole do odpowiedzi długiej i któtkiej (pytania otwarte) 
+                 - odpowiedź jednokrotnego wyboru
+                 - odpowiedź wielokrotnego wyboru
+                 - podpowiedź (?)
+                 - przycisk do sprawdzenia odpowiedzi i przejście do następnego pytania
+
+                
+
+                <button class="answerBtn flex min-w-48 min-h-12 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 hover:bg-gray-850 bg-gray-900 transition duration-150 h-fit w-fit max-w-72">
+
+                    <div class="flex items-center justify-center w-12 min-h-12 aspect-square rounded-l-lg text-white text-2xl p-3 font-bold">A</div>
+                    <div class="flex-1 text-start rounded-r-lg text-white p-3 border-l-2 border-gray-700 text-wrap">
+                        <p>Pierwsza odpowiedź</p>
+                    </div>
+                </button>
+                <button class="answerBtn flex min-w-48 min-h-12 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 hover:bg-gray-850 bg-gray-900 transition duration-150 h-fit w-fit max-w-72">
+
+                    <div class="flex items-center justify-center w-12 min-h-12 aspect-square rounded-l-lg text-white text-2xl p-3 font-bold">B</div>
+                    <div class="flex-1 text-start rounded-r-lg text-white p-3 border-l-2 border-gray-700 text-wrap">
+                        <p>Numer dwa</p>
+                    </div>
+                </button>
+                <button class="answerBtn flex min-w-48 min-h-12 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 hover:bg-gray-850 bg-gray-900 transition duration-150 h-fit w-fit max-w-72">
+
+                    <div class="flex items-center justify-center w-12 min-h-12 aspect-square rounded-l-lg text-white text-2xl p-3 font-bold">C</div>
+                    <div class="flex-1 text-start rounded-r-lg text-white p-3 border-l-2 border-gray-700 text-wrap">
+                        <p>To również jest długa odpowiedź. Naprawdę</p>
+                    </div>
+                </button>
+
+                <button class="answerBtn flex min-w-48 min-h-12 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 hover:bg-gray-800 bg-gray-750 transition duration-150 h-fit w-fit max-w-72">
+
+                    <div class="flex items-center justify-center w-12 min-h-12 aspect-square rounded-l-lg text-white text-2xl p-3 font-bold">D</div>
+                    <div class="flex-1 text-start rounded-r-lg text-white p-3 border-l-2 border-gray-700 text-wrap">
+                        <p>Odpowiedzi wielokrotnego wyboru</p>
+                    </div>
+                </button>
+
+                <button class="answerBtn flex min-w-48 min-h-12 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 transition duration-150 h-fit w-fit max-w-72 cursor-default" style="background: #450000; border: 2px solid #d30000">
+                    <div class="flex items-center justify-center w-12 min-h-12 aspect-square rounded-l-lg text-2xl p-3 font-bold" style="color: #d30000">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x leading-normal"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </div>
+                    <div class="flex-1 text-start rounded-r-lg text-white p-3 text-wrap" style="border-left: 2px solid #d30000">
+                        <p>Zła odpowiedź</p>
+                    </div>
+                </button>
+
+                <button class="answerBtn flex min-w-48 min-h-12 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 transition duration-150 h-fit w-fit max-w-72 cursor-default" style="background: #004518; border: 2px solid #00d348">
+                    <div class="flex items-center justify-center w-12 min-h-12 aspect-square rounded-l-lg text-2xl p-3 font-bold" style="color: #00d348">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check leading-normal"><path d="M20 6 9 17l-5-5"/></svg>
+                    </div>
+                    <div class="flex-1 text-start rounded-r-lg text-white p-3 text-wrap" style="border-left: 2px solid #00d348">
+                        <p>Poprawna odpowiedź</p>
+                    </div>
+                </button>
+
+                <button class="answerBtn flex min-w-48 min-h-12 border-2 border-gray-700 rounded-lg text-white text-base select-none p-0 mb-3 transition duration-150 h-fit w-fit max-w-72 cursor-default" style="background: #004518; border: 2px dashed #00d348">
+                    <div class="flex items-center justify-center w-12 min-h-12 aspect-square rounded-l-lg text-2xl p-3 font-bold" style="color: #00d348">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check leading-normal"><path d="M20 6 9 17l-5-5"/></svg>
+                    </div>
+                    <div class="flex-1 text-start rounded-r-lg text-white p-3 text-wrap" style="border-left: 2px dashed #00d348">
+                        <p>Podgląd poprawnej odpowiedzi</p>
+                    </div>
+                </button>
+
+                <button class="aspect-square border-2 border-gray-700 rounded-lg text-gray-300 text-base select-none p-3 mb-3 transition duration-150 bg-gray-900 hover:bg-gray-850">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+
+                <button class="border-2 border-gray-700 rounded-lg text-gray-300 text-base select-none p-3 mb-3 transition duration-150 bg-gray-900 hover:bg-gray-850">
+                    Sprawdź odpowiedzi
+                </button>
+
+                <button class="border-2 flex border-gray-700 rounded-lg text-gray-300 text-base select-none p-3 mb-3 transition duration-150 bg-gray-900 hover:bg-gray-850">
+                    <p class="mr-2">Następne pytanie</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+            </div> -->
+    </main>
+
+    <script src="/flowbite/flowbite.min.js"></script>
+    <script src="https://kit.fontawesome.com/eef8afdd03.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="./css/global.css"></script>
+    <script src="./js/generator_testow.js"></script>
+
+    <script>
+
+        // var max = 0;
+        // $(".answerBtn").each(function() {
+        //     var w = $(this).width();
+        //     if (w > max) {
+        //         max = w;
+        //     }
+        // });
+        // $(".answerBtn").width(max);
+
+        // $('#progress').css('width', '25%');
+        
+        // setTimeout(function() {
+        //     $('#progress').css('width', '40%');
+        // }, 1000); // Opóźnienie 100ms
+        
+        $(window).on("load", function(){
+            setTimeout(function() {
+                $('#preloader').addClass('fadeOut');
+
+                setTimeout(function() {
+                    $('#preloader').addClass('hidden');
+                }, 150); // Opóźnienie 500ms
+
+            }, 500); // Opóźnienie 500ms
+        });
+    </script>
+
+<!-- 100% privacy-first analytics -->
+<script data-collect-dnt="true" async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+<noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+<noscript>Włącz obsługę JavaScript</noscript>
+
+</body>
+</html>

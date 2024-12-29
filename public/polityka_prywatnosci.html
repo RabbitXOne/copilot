@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "oe0928pd28");
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomoce naukowe</title>
+
+    <link rel="stylesheet" href="./css/output.css" type="text/css">
+    <script src="/jquery/jquery.js"></script>
+
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+<link rel="shortcut icon" href="/favicon/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="Co-pilot" />
+<link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <style>
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        #content {
+    padding: 16px; /* Odstępy */
+}
+
+#content h1 {
+    font-size: 2rem; /* 32px */
+    font-weight: bold;
+    margin: 1rem 0; /* Odstępy */
+}
+
+#content h2 {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 600;
+    margin: 0.75rem 0; /* Odstępy */
+}
+
+#content p {
+    margin-bottom: 0.5rem; /* Odstępy */
+}
+
+#content ul {
+    list-style-type: disc; /* Kropki */
+    padding-left: 20px; /* Wcięcie */
+    margin-bottom: 1rem; /* Odstępy */
+}
+
+#content ul li {
+    margin-bottom: 0.25rem; /* Odstępy */
+}
+
+#content a {
+    /* color: #2563eb; Kolor niebieski */
+    text-decoration: underline; /* Podkreślenie */
+}
+
+#content blockquote {
+    border-left: 4px solid #9ca3af; /* Szary kolor */
+    padding-left: 1rem; /* Wcięcie */
+    font-style: italic; /* Kursywa */
+    color: #4b5563; /* Szary tekst */
+    margin: 1rem 0; /* Odstępy */
+}
+
+#content img {
+    max-width: 100%; /* Responsywność */
+    height: auto; /* Automatyczna wysokość */
+    margin: 1rem 0; /* Odstępy */
+}
+
+#content code {
+    background-color: #e5e7eb; /* Jasnoszary */
+    border-radius: 4px; /* Zaokrąglone rogi */
+    padding: 0.2rem; /* Odstępy */
+}
+
+#content pre {
+    background-color: #e5e7eb; /* Jasnoszary */
+    padding: 1rem; /* Odstępy */
+    overflow-x: auto; /* Przewijanie */
+    margin: 1rem 0; /* Odstępy */
+}
+
+
+    </style>
+
+</head>
+<body class="dark:bg-gray-900">
+
+    <script src="/socketio/socket.io.js"></script>
+    
+    <script>
+        const socket = io();
+    </script>
+
+    <div class="flex flex-col h-svh min-h-fit">
+
+        <div class="flex flex-col items-center justify-center mt-12 flex-wrap mx-3 dark:text-gray-200">
+            <div class="flex flex-row">
+                <i class="fa-solid fa-school-circle-check content-start text-4xl mr-5 mb-1"></i>
+                <p class="text-4xl font-bold mb-1">Pomoce naukowe</p>
+            </div>
+            <p class="text-xl font-bold mb-1">Polityka prywatności</p>
+        </div>
+
+        <div id="content" class="mt-4 container self-center dark:text-gray-200">
+            <div class="h-6 w-full bg-gray-200 dark:bg-gray-850 animate-pulse rounded mb-2"></div>
+            <div class="h-6 w-full bg-gray-200 dark:bg-gray-850 animate-pulse rounded mb-2"></div>
+            <div class="h-6 w-full bg-gray-200 dark:bg-gray-850 animate-pulse rounded mb-2"></div>
+            <div class="h-6 w-full bg-gray-200 dark:bg-gray-850 animate-pulse rounded"></div>
+        </div>
+    </div>
+  
+    <script src="https://kit.fontawesome.com/eef8afdd03.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="./css/global.css"></script>
+
+    <script>
+        socket.emit('startup', 'privacy');
+
+        let startupTry = 0;
+        socket.on('startup', function(response, content) {
+            if(response === 'auth-redirection') {
+                window.location.href = '/logout';
+            } else if(response === 'db-err') {
+                
+                // Retry
+                if(startupTry < 3) {
+                    startupTry++;
+                    socket.emit('startup', 'privacy');
+                } else {
+                    // Nie udało się połączyć z bazą danych
+                    // Odśwież stronę
+                    window.location.reload();
+                }
+            } else if(response === 'banned') {
+                // Zbanowany
+                window.location.href = '/';
+
+            } else if(response === 'success' && content) {
+                let fixedContent = sanitize(content);
+
+                var converter = new showdown.Converter(),
+                text      = fixedContent,
+                html      = converter.makeHtml(text);
+
+                $('#content').html(html);
+
+            } else {
+                // console.log('Startup failed - unknown error');
+                window.location.href = '/';
+            }
+
+        });
+
+        function sanitize(string) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#x27;',
+                "/": '&#x2F;',
+            };
+
+            const reg = /[&<>"'/]/ig;
+            return string.replace(reg, (match)=>(map[match]));
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js" integrity="sha512-LhccdVNGe2QMEfI3x4DVV3ckMRe36TfydKss6mJpdHjNFiV07dFpS2xzeZedptKZrwxfICJpez09iNioiSZ3hA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <script data-collect-dnt="true" async defer src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    <noscript><img src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" alt="" referrerpolicy="no-referrer-when-downgrade" /></noscript>
+    <noscript>Włącz obsługę JavaScript</noscript>
+
+</body>
+</html>
